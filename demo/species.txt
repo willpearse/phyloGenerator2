@@ -1,0 +1,4 @@
+quercus_ilex
+quercus_rubra
+acer_palmatum
+rumex_acetosella
