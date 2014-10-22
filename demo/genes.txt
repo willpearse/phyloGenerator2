@@ -1,2 +1,2 @@
-rbcL
-matK
+rbcL,rbcL_reference.fasta,700,1600
+matK,matK_reference.fasta,400,1500

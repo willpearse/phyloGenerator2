@@ -5,8 +5,6 @@ require_relative "lib/Cap.rb"
 require 'optparse'
 require 'io/console'
 
-
-
 options = {}
 OptionParser.new do |opts|  
   opts.banner = "ThePhyloGenerator - BETA version"
@@ -23,13 +21,24 @@ end.parse!
 #Setup
 puts "ThePhyloGenerator - BETA version"
 species = File.open(options[:species], "r").readlines.map {|line| line.chomp}
-genes = File.open(options[:genes]).readlines.map {|line| line.chomp}
+genes = []
+thor_args = {}
+File.open(options[:genes]).each do |line|
+  if line.include? ","
+    line = line.chomp.split(",")
+    genes << line[0]
+    thor_args[line[0].to_s] = {:ref_file=>line[1], :ref_min=>line[2].to_i, :ref_max=>line[3].to_i}
+  else
+    genes << line.chomp
+    thor_args[line.chomp.to_s] = {}
+  end
+end
 Bio::NCBI.default_email = options[:email]
 Dir.chdir options[:working_dir]
 
 #Run
 puts " - Setup complete..."
-cap = Cap.new(species, genes)
+cap = Cap.new(species, genes, thor_args)
 cap.download
 puts " - Download complete..."
 cap.hulk
