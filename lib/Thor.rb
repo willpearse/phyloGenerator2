@@ -32,7 +32,7 @@ class Thor
         unless seq.empty?
           seq = Bio::Sequence.new("#{seq}")
           if @ref_file then
-            unless ref_align(seq, @ref_file, max=@ref_max, min=@ref_min)
+            unless ref_align(seq, @ref_file, max=@ref_max)
               next
             end
           end          
@@ -68,12 +68,12 @@ class Thor
     return better
   end
 
-  def ref_align(seq, ref_file, max=100000, min=0)
+  def ref_align(seq, ref_file, max=100000)
     FileUtils.cp(ref_file, "thor_ref_#{@id}.fasta")
     File.open("thor_ref_#{@id}.fasta", "a") {|handle| handle << seq.output_fasta("temp_file")}
     `mafft --quiet thor_ref_#{@id}.fasta > thor_ref_#{@id}_mafft.fasta`
     seq_len = Bio::FastaFormat.open("thor_ref_#{@id}_mafft.fasta").first.length
     File.delete("thor_ref_#{@id}.fasta", "thor_ref_#{@id}_mafft.fasta")
-    if (seq_len < max and seq_len > min) then return true else return false end
+    if (seq_len < max) then return true else return false end
   end
 end

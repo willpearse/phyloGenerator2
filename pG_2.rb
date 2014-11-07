@@ -1,11 +1,11 @@
 #!/usr/bin/ruby
-#Running ThePhyloGenerator
+#phyloGenerator 2
 
 require_relative "lib/Cap.rb"
 require 'optparse'
 require 'io/console'
 
-options = {}
+options = {:examl=>true}
 OptionParser.new do |opts|  
   opts.banner = "ThePhyloGenerator - BETA version"
   opts.on_tail("-h", "--help", "Show this message") do
@@ -16,6 +16,8 @@ OptionParser.new do |opts|
   opts.on("-g FILE", "--genes FILE", "File with gene names on each line)") {|x| options[:genes] = x}
   opts.on("-e EMAIL", "--email EMAIL", "Email address for downloads") {|x| options[:email] = x}
   opts.on("-d DIRECTORY", "--directory DIRECTORY", "Absolute path for all output data") {|x| options[:working_dir] = x}
+  opts.on("--cache", "Working directory will be searched for (*any*) existing species data") {|x| options[:cache] = options[:working_dir]}
+  opts.on("--bayes", "Use ExaBayes to calculate phylogeny") {|x| options[:examl] = false}
 end.parse!
 
 #Setup
@@ -38,7 +40,7 @@ Dir.chdir options[:working_dir]
 
 #Run
 puts " - Setup complete..."
-cap = Cap.new(species, genes, thor_args)
+cap = Cap.new(species, genes, options[:cache], thor_args, options[:examl])
 cap.download
 puts " - Download complete..."
 cap.hulk
