@@ -28,8 +28,13 @@ thor_args = {}
 File.open(options[:genes]).each do |line|
   if line.include? ","
     line = line.chomp.split(",")
-    genes << line[0]
-    thor_args[line[0].to_s] = {:ref_file=>line[1], :ref_min=>line[2].to_i, :ref_max=>line[3].to_i}
+    if line.length > 4
+      genes << line[0]
+      thor_args[line[0].to_s] = {:ref_file=>line[1], :ref_min=>line[2].to_i, :ref_max=>line[3].to_i, :gap_length=>line[4].to_s, :max_gaps=>line[5].to_s}
+    else
+      genes << line[0]
+      thor_args[line[0].to_s] = {:ref_file=>line[1], :ref_min=>line[2].to_i, :ref_max=>line[3].to_i}
+    end
   else
     genes << line.chomp
     thor_args[line.chomp.to_s] = {}
@@ -43,5 +48,7 @@ puts " - Setup complete..."
 cap = Cap.new(species, genes, options[:cache], thor_args, options[:examl])
 cap.download
 puts " - Download complete..."
+cap.check
+puts " - Secondary check complete..."
 cap.hulk
 puts ".Finished."

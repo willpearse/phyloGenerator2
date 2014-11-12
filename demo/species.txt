@@ -4,3 +4,5 @@ acer_palmatum
 rumex_acetosella
 quercus_robur
 cyperus_papyrus
+acer_rubrum
+acer_platanoides
