@@ -3,7 +3,6 @@
 
 require_relative "lib/Cap.rb"
 require 'optparse'
-require 'io/console'
 
 options = {:examl=>true, :partition=>nil}
 OptionParser.new do |opts|  
@@ -15,8 +14,8 @@ OptionParser.new do |opts|
   opts.on("-s FILE", "--species FILE", "File with genus_species on each line") {|x| options[:species] = x}
   opts.on("-g FILE", "--genes FILE", "File with gene names on each line)") {|x| options[:genes] = x}
   opts.on("-e EMAIL", "--email EMAIL", "Email address for downloads") {|x| options[:email] = x}
-  opts.on("-d DIRECTORY", "--directory DIRECTORY", "Absolute path for all output data") {|x| options[:working_dir] = x}
-  opts.on("--cache", "Working directory will be searched for (*any*) existing species data") {|x| options[:cache] = options[:working_dir]}
+  opts.on("-d DIRECTORY", "--directory DIRECTORY", "Absolute path to existing folder for output") {|x| options[:working_dir] = x}
+  opts.on("-c DIRECTORY", "--cache DIRECTORY", "Directory with existing sequence data") {|x| options[:cache] = x}
   opts.on("--bayes", "Use ExaBayes to calculate phylogeny") {|x| options[:examl] = false}
   opts.on("--partition", "Partition phylogenetic searches") {|x| options[:partition] = true}
 end.parse!
@@ -52,4 +51,6 @@ puts " - Download complete..."
 cap.check
 puts " - Secondary check complete..."
 cap.hulk
+puts " - Phylogeny building complete..."
+cap.cleanup
 puts ".Finished."

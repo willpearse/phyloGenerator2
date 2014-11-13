@@ -2,7 +2,7 @@
 require_relative "Thor.rb"
 require_relative "Hulk.rb"
 require_relative "Hawkeye.rb"
-require 'set'
+require 'fileutils'
 
 class Cap
   def initialize(species, genes, cache=nil, thor_args={}, examl=true, partition=false)
@@ -14,6 +14,7 @@ class Cap
     @cache = cache
     if @cache
       to_check_spp = []
+      Dir["#{cache}/*.fasta"].each {|file| FileUtils.copy(file, file.split("/")[-1])}
       species.each{|sp| unless Dir["#{@cache}*"] then to_check_spp << sp end}
       puts " - - of #{species.length} species, #{to_check_spp.length} are not cached"
       @thors = genes.map {|gene| Thor.new(to_check_spp, gene, thor_args[gene.to_s])}
@@ -48,5 +49,18 @@ class Cap
 
   def hulk
     @hulk.smash(@species, @genes)
-  end 
+  end
+
+  def cleanup
+    Dir.mkdir "hawkeye"
+    Dir["*_bad.fasta"].each {|x| FileUtils.mv(x, "hawkeye/#{x}")}
+    Dir["hawkeye_*"].each {|x| FileUtils.mv(x, "hawkeye/#{x}")}
+    Dir.mkdir "hulk"
+    Dir["hulk_*"].each {|x| FileUtils.mv(x, "hulk/#{x}")}
+    Dir["ExaBayes_*"].each {|x| FileUtils.mv(x, "hulk/#{x}")}
+    Dir["ExaML_*"].each {|x| FileUtils.mv(x, "hulk/#{x}")}
+    Dir["RAxML_*"].each {|x| FileUtils.mv(x, "hulk/#{x}")}
+    Dir.mkdir "thor"
+    Dir["*.fasta"].each {|x| FileUtils.mv(x, "thor/#{x}")}
+  end
 end
