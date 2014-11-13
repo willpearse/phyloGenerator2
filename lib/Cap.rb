@@ -5,17 +5,17 @@ require_relative "Hawkeye.rb"
 require 'set'
 
 class Cap
-  def initialize(species, genes, cache=nil, thor_args={}, examl=true)
+  def initialize(species, genes, cache=nil, thor_args={}, examl=true, partition=false)
     @species = species
     @genes = genes
     @thors = genes.map {|gene| Thor.new(@species, gene, thor_args[gene.to_s])}
     @hawks = genes.map {|gene| Hawkeye.new(@species, gene, thor_args[gene.to_s])}
-    @hulk = Hulk.new(examl)
+    @hulk = Hulk.new(examl, partition)
     @cache = cache
     if @cache
       to_check_spp = []
       species.each{|sp| unless Dir["#{@cache}*"] then to_check_spp << sp end}
-      puts "- of #{species.length} species, #{to_check_spp.length} are not cached"
+      puts " - - of #{species.length} species, #{to_check_spp.length} are not cached"
       @thors = genes.map {|gene| Thor.new(to_check_spp, gene, thor_args[gene.to_s])}
     else
       @thors = genes.map {|gene| Thor.new(@species, gene, thor_args[gene.to_s])}

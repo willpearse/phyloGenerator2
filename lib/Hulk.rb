@@ -7,10 +7,13 @@
 class Hulk
   @@n_hulk = 0
   @@n_runs = 0
-  def initialize(examl=true, model_params={})
+  def initialize(examl=true, partition=false, model_params={})
     @this_hulk = @@n_hulk
     @@n_hulk += 1
-    @model_params = {}
+    @model_params = model_params
+    @cmd_string = ""
+    @partition = partition
+    @partition_file = []
     @examl = examl
   end
 
@@ -23,6 +26,7 @@ class Hulk
   #Internal methods
   private
   def align(species, genes)
+    cr_len = 0
     genes.each do |gene|
       File.open("hulk_#{@this_hulk}_#{gene}.fasta", "w") do |file|
         species.each do |spp|
@@ -34,6 +38,11 @@ class Hulk
         end
       end
       `mafft --quiet hulk_#{@this_hulk}_#{gene}.fasta > hulk_#{@this_hulk}_#{gene}_mafft.fasta`
+      if @partition
+        align = Bio::Alignment.new(Bio::FastaFormat.open("hulk_#{@this_hulk}_#{gene}_mafft.fasta")).alignment_length
+        @partition_file << "DNA, #{gene}=#{cr_len+1}-#{cr_len+align}\\3,#{cr_len+2}-#{cr_len+align}\\3,#{cr_len+3}-#{cr_len+align}\\3"
+        cr_len += align
+      end
     end
   end
   
@@ -46,7 +55,6 @@ class Hulk
         sp = seq.definition.split("_")[0...-1].join("_")
         if seqs.include? sp
           seqs[sp] = Bio::Sequence.new(seqs[sp] + seq)
-          
         else
           seqs[sp] = seq
         end
@@ -59,13 +67,19 @@ class Hulk
   private
   def phylo_generate()
     @@n_runs += 1
+    if @partition
+      File.open("hulk_#{@this_hulk}_#{@@n_runs}.partition", "w") {|file| file << @partition_file.join("\n")}
+      @cmd_string << " -q hulk_#{@this_hulk}_#{@@n_runs}.partition"
+      puts @cmd_string      
+    end
     if @examl
       #Ha! this is shit...
       `Rscript -e "require(ape);t<-read.dna('hulk_#{@this_hulk}.phylip');t<-rtree(nrow(t),tip.label=rownames(t),br=NULL);write.tree(t,'hulk_#{@this_hulk}_#{@@n_runs}.tre')"`
-      `parse-examl -s hulk_#{@this_hulk}.phylip -n hulk_#{@this_hulk}_#{@@n_runs} -m DNA`
-      `examl -s hulk_#{@this_hulk}_#{@@n_runs}.binary -p #{Random.rand(100000)} -m PSR -n hulk_#{@this_hulk}_#{@@n_runs} -t hulk_#{@this_hulk}_#{@@n_runs}.tre`
+      `parse-examl -s hulk_#{@this_hulk}.phylip -n hulk_#{@this_hulk}_#{@@n_runs}_parse -m DNA#{@cmd_string}`
+      puts "parse-examl -s hulk_#{@this_hulk}.phylip -n hulk_#{@this_hulk}_#{@@n_runs}_parse -m DNA#{@cmd_string}"
+      `examl -s hulk_#{@this_hulk}_#{@@n_runs}_parse.binary -p #{Random.rand(100000)} -m PSR -n hulk_#{@this_hulk}_#{@@n_runs} -t hulk_#{@this_hulk}_#{@@n_runs}.tre`
     else
-      `yggdrasil -f hulk_#{@this_hulk}.phylip -s #{Random.rand(100000)} -m DNA -n hulk_#{@this_hulk}_#{@@n_runs}`
+      `yggdrasil -f hulk_#{@this_hulk}.phylip -s #{Random.rand(100000)} -m DNA -n hulk_#{@this_hulk}_#{@@n_runs}#{@cmd_string}`
     end
   end
 end

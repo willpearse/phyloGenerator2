@@ -11,21 +11,24 @@ class Hawkeye
     @gap_length = args[:gap_length]
     @check_gap = /[-]{#{@gap_length},}/
     @check_dna = /[a-zA-Z\?]{#{@gap_length},}/
+    @ref_file = args[:ref_file]
   end
 
   def check()
     align()
     bad_seq = []
+    #Find danger spots in alignment
     seqs = Bio::FastaFormat.open("hawkeye_#{@id}_#{@gene}_mafft.fasta").to_a
     alignment = Bio::Alignment.new(seqs)
-    gaps = alignment.consensus_string(0.75).enum_for(:scan, @check_gap).map { [Regexp.last_match.begin(0),Regexp.last_match.end(0)] }
-    dna = alignment.consensus_string(0.75).enum_for(:scan, @check_dna).map { [Regexp.last_match.begin(0),Regexp.last_match.end(0)] }
-    danger_spots = gaps + dna
-    spot_checker = ([@check_dna] * gaps.length) + ([@check_gap] * dna.length) 
+    danger_spots = alignment.consensus_string(0.9).enum_for(:scan, @check_gap).map { [Regexp.last_match.begin(0),Regexp.last_match.end(0)] }
+    #Check those are danger spots in the reference sequences (--> need to be fixed)
+    ref_align = Bio::Alignment.new(seqs[0..@ref_seqs])
+    ref_consensus = ref_align.consensus_string(0.8)
+    danger_spots.reject! {|x,y| ref_consensus[x..y][@check_dna]}
     seqs.each do |seq|
       seq = seq.to_biosequence
-      danger_spots.zip(spot_checker).each do |pos, reg|
-        if pos and seq[pos[0]..pos[1]][reg]
+      danger_spots.each do |x, y|
+        if seq[x..y][@check_dna]
           bad_seq << seq.primary_accession
           break
         end
@@ -39,6 +42,8 @@ class Hawkeye
   def align()
     species_to_delete = []
     File.open("hawkeye_#{@id}_#{gene}.fasta", "w") do |file|
+      @ref_seqs = Bio::FastaFormat.open(@ref_file, "r").to_a.length
+      file << File.read(@ref_file)
       @spp.each do |sp|
         if File.exists? "#{sp}_#{@gene}.fasta"
           file << Bio::FastaFormat.open("#{sp}_#{@gene}.fasta", "r").first
