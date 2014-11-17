@@ -5,7 +5,7 @@ require_relative "Hawkeye.rb"
 require 'fileutils'
 
 class Cap
-  def initialize(species, genes, cache=nil, thor_args={}, examl=true, partition=false)
+  def initialize(species, genes, cache=nil, thor_args={}, examl=true, partition=false, constraint=false)
     @species = species
     @genes = genes
     @thors = genes.map {|gene| Thor.new(@species, gene, thor_args[gene.to_s])}
@@ -21,6 +21,7 @@ class Cap
     else
       @thors = genes.map {|gene| Thor.new(@species, gene, thor_args[gene.to_s])}
     end
+    if constraint then @constraint = Bio::Newick.new(File.read(constraint)).tree else @constraint = false end
   end
 
   #Public methods
@@ -44,11 +45,15 @@ class Cap
     @hawks.each {|hawk| threads << Thread.new { failed_species << hawk.check() } }
     threads.each {|t| t.join }
     failed_species.flatten!
-    failed_species.each {|sp_gene| File.rename("#{sp_gene}.fasta", "#{sp_gene}_bad.fasta") }
+    failed_species.each {|sp_gene| if File.exists?("#{sp_gene}.fasta") then File.rename("#{sp_gene}.fasta", "#{sp_gene}_bad.fasta") end }
   end
 
   def hulk
-    @hulk.smash(@species, @genes)
+    if @constraint
+      to_drop = @species - @constraint.leaves.map{|x| x.name.sub(" ","_")}
+      to_drop.each {|sp| @constraint.remove_node(sp.sub("_"," ")) }
+    end
+    @hulk.smash(@species, @genes, @constraint)
   end
 
   def cleanup

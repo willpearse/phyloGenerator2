@@ -19,12 +19,12 @@ class Hawkeye
     bad_seq = []
     #Find danger spots in alignment
     seqs = Bio::FastaFormat.open("hawkeye_#{@id}_#{@gene}_mafft.fasta").to_a
-    alignment = Bio::Alignment.new(seqs)
-    danger_spots = alignment.consensus_string(0.9).enum_for(:scan, @check_gap).map { [Regexp.last_match.begin(0),Regexp.last_match.end(0)] }
+    #alignment = Bio::Alignment.new(seqs)
+    #danger_spots = alignment.consensus_string(0.9).enum_for(:scan, @check_gap).map { [Regexp.last_match.begin(0),Regexp.last_match.end(0)] }
     #Check those are danger spots in the reference sequences (--> need to be fixed)
     ref_align = Bio::Alignment.new(seqs[0..@ref_seqs])
-    ref_consensus = ref_align.consensus_string(0.8)
-    danger_spots.reject! {|x,y| ref_consensus[x..y][@check_dna]}
+    danger_spots = ref_align.consensus_string(1.0).enum_for(:scan, @check_gap).map { [Regexp.last_match.begin(0),Regexp.last_match.end(0)] }
+    danger_spots.reject! {|x,y| x==0 | y=ref_align.size}
     seqs.each do |seq|
       seq = seq.to_biosequence
       danger_spots.each do |x, y|

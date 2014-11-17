@@ -4,7 +4,7 @@
 require_relative "lib/Cap.rb"
 require 'optparse'
 
-options = {:examl=>true, :partition=>nil}
+options = {:examl=>true, :partition=>nil, :constraint=>false, :hawkeye=>false}
 OptionParser.new do |opts|  
   opts.banner = "ThePhyloGenerator - BETA version"
   opts.on_tail("-h", "--help", "Show this message") do
@@ -16,8 +16,10 @@ OptionParser.new do |opts|
   opts.on("-e EMAIL", "--email EMAIL", "Email address for downloads") {|x| options[:email] = x}
   opts.on("-d DIRECTORY", "--directory DIRECTORY", "Absolute path to existing folder for output") {|x| options[:working_dir] = x}
   opts.on("-c DIRECTORY", "--cache DIRECTORY", "Directory with existing sequence data") {|x| options[:cache] = x}
+  opts.on("-tree FILE", "--tree-constraint FILE", "Constraint tree for search") {|x| options[:constraint] = x}
   opts.on("--bayes", "Use ExaBayes to calculate phylogeny") {|x| options[:examl] = false}
   opts.on("--partition", "Partition phylogenetic searches") {|x| options[:partition] = true}
+  opts.on("--hawkeye", "Conduct secondary sequence checks") {|x| options[:hawkeye] = true}
 end.parse!
 
 #Setup
@@ -45,11 +47,13 @@ Dir.chdir options[:working_dir]
 
 #Run
 puts " - Setup complete..."
-cap = Cap.new(species, genes, options[:cache], thor_args, options[:examl], options[:partition])
+cap = Cap.new(species, genes, options[:cache], thor_args, options[:examl], options[:partition], options[:constraint])
 cap.download
 puts " - Download complete..."
-cap.check
-puts " - Secondary check complete..."
+if options[:hawkeye]
+  cap.check
+  puts " - Secondary check complete..."
+end
 cap.hulk
 puts " - Phylogeny building complete..."
 cap.cleanup
