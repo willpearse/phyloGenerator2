@@ -7,14 +7,14 @@
 class Hulk
   @@n_hulk = 0
   @@n_runs = 0
-  def initialize(examl=true, partition=false, model_params={})
+  def initialize(method="raxml", partition=false, model_params={})
     @this_hulk = @@n_hulk
     @@n_hulk += 1
     @model_params = model_params
     @phy_string = ""; @parse_string = ""
     @partition = partition
     @partition_file = []
-    @examl = examl
+    @method = method
   end
 
   def smash(species, genes, constraint=false)
@@ -77,13 +77,18 @@ class Hulk
       File.open("hulk_#{@this_hulk}_#{@@n_runs}.constraint", "w"){|file| file << constraint.output_newick}
       @phy_string << " -g hulk_#{@this_hulk}_#{@@n_runs}.constraint"
     end
-    if @examl
+    case @method
+    when "examl"
       #Ha! this is shit...
       `Rscript -e "require(ape);t<-read.dna('hulk_#{@this_hulk}.phylip');t<-rtree(nrow(t),tip.label=rownames(t),br=NULL);write.tree(t,'hulk_#{@this_hulk}_#{@@n_runs}.tre')"`
       `parse-examl -s hulk_#{@this_hulk}.phylip -n hulk_#{@this_hulk}_#{@@n_runs}_parse -m DNA#{@parse_string}`
       `examl -s hulk_#{@this_hulk}_#{@@n_runs}_parse.binary -p #{Random.rand(100000)} -m PSR -n hulk_#{@this_hulk}_#{@@n_runs} -t hulk_#{@this_hulk}_#{@@n_runs}.tre#{@phy_string}`
-    else
+    when "exabayes"
       `yggdrasil -f hulk_#{@this_hulk}.phylip -s #{Random.rand(100000)} -m DNA -n hulk_#{@this_hulk}_#{@@n_runs}#{@phy_string}`
+    when "raxml"
+      `raxml -s hulk_#{@@n_hulk}.fasta -p #{Random.rand(100000)} -m GTRGAMMA -n hulk_#{@@n_hulk}_#{@@n_runs}#{@phy_string}`
+    else
+      raise RuntimeError, "Hulk called with unsupported method #{@method}"
     end
   end  
 end
