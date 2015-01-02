@@ -1,4 +1,5 @@
 #Checking alignments and fixing as best-can
+require "bio"
 
 class Hawkeye
   @@n_hawkeye = 0

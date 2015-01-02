@@ -5,21 +5,21 @@ require_relative "Hawkeye.rb"
 require 'fileutils'
 
 class Cap
-  def initialize(species, genes, cache=nil, thor_args={}, examl=true, partition=false, constraint=false)
-    @species = species
+  def initialize(species, genes, cache=nil, thor_args={}, hulk_method="examl", partition=false, constraint=false)
+    @species = Marshal::load(Marshal.dump(species)) #Multicore --> copy paranoia
     @genes = genes
-    @thors = genes.map {|gene| Thor.new(@species, gene, thor_args[gene.to_sym])}
-    @hawks = genes.map {|gene| Hawkeye.new(@species, gene, thor_args[gene.to_sym])}
-    @hulk = Hulk.new(examl, partition)
+    @hulk = Hulk.new(hulk_method, partition)
     @cache = cache
     if @cache
       to_check_spp = []
       Dir["#{cache}/*.fasta"].each {|file| FileUtils.copy(file, file.split("/")[-1])}
-      species.each{|sp| unless Dir["#{@cache}*"] then to_check_spp << sp end}
+      @species.each{|sp| unless Dir["#{@cache}*"] then to_check_spp << sp end}
       puts " - - of #{species.length} species, #{to_check_spp.length} are not cached"
       @thors = genes.map {|gene| Thor.new(to_check_spp, gene, thor_args[gene.to_sym])}
+      @hawks = genes.map {|gene| Hawkeye.new(to_check_spp, gene, thor_args[gene.to_sym])}
     else
       @thors = genes.map {|gene| Thor.new(@species, gene, thor_args[gene.to_sym])}
+      @hawks = genes.map {|gene| Hawkeye.new(@species, gene, thor_args[gene.to_sym])}
     end
     if constraint then @constraint = Bio::Newick.new(File.read(constraint)).tree else @constraint = false end
   end

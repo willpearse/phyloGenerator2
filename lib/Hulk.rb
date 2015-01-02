@@ -3,6 +3,7 @@
 # FWIW, this is how to make this work with RAxML
 #File.open("hulk_#{@@n_hulk}.fasta", "w") {|file| seqs.each_pair {|sp, seq| file << seq.output_fasta(sp)} }
 #`raxml -s hulk_#{@@n_hulk}.fasta -p #{Random.rand(100000)} -m GTRGAMMA -n hulk_#{@@n_hulk}_#{@@n_runs}`
+require "bio"
 
 class Hulk
   @@n_hulk = 0
@@ -86,7 +87,7 @@ class Hulk
     when "exabayes"
       `yggdrasil -f hulk_#{@this_hulk}.phylip -s #{Random.rand(100000)} -m DNA -n hulk_#{@this_hulk}_#{@@n_runs}#{@phy_string}`
     when "raxml"
-      `raxml -s hulk_#{@@n_hulk}.fasta -p #{Random.rand(100000)} -m GTRGAMMA -n hulk_#{@@n_hulk}_#{@@n_runs}#{@phy_string}`
+      `raxml -s hulk_#{@this_hulk}.phylip -p #{Random.rand(100000)} -m GTRGAMMA -n hulk_#{@@n_hulk}_#{@@n_runs}#{@phy_string}`
     else
       raise RuntimeError, "Hulk called with unsupported method #{@method}"
     end

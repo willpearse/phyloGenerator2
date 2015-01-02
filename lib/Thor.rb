@@ -7,7 +7,7 @@ require 'bio'
 
 class Thor
   @@n_thor = 0
-  attr_reader :gene, :seqs
+  attr_reader :gene
   def initialize(species, gene, args={})
     @ncbi = Bio::NCBI::REST.new
     @species = species
