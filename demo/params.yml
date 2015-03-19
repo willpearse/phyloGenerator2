@@ -14,7 +14,7 @@ species: /home/will/Code/phyloGenerator2/demo/species.txt
 #Output directry (must aready exist)
 working_dir: /home/will/test/
 #Email address for downloads
-email: wdpearse@umn.edu
+email: will.pearse@gmail.com
 
 ######################
 #DNA DOWNLOAD#########
@@ -44,8 +44,8 @@ genes:
 # - with the exception of 'phy_method' none of these must be given
 # - there is no 'false' value that must be supplied
 #Which program to use for phylogenetic search
-phy_method: examl
-#phy_method: raxml
+#phy_method: examl
+phy_method: raxml
 #phy_method: exabayes
 #Whether to perform secondary check of sequences
 #hawkeye: true

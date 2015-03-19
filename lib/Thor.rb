@@ -54,11 +54,20 @@ class Thor
   #Internal methods
   private
   def dwn_seqs(organism, retmax=10)
-    n_ids = @ncbi.esearch("#{organism}[organism] AND #{@gene}[gene]", { "db"=>"nucleotide", "rettype"=>"gb", "retmax"=> retmax})
-    curr_id = 0
-    while curr_id < n_ids.length
-      yield Bio::GenBank.new(@ncbi.efetch(ids = n_ids[curr_id], {"db"=>"nucleotide", "rettype"=>"gb", "retmax"=> 1}))
-      curr_id += 1
+    locker = 0
+    begin
+      n_ids = @ncbi.esearch("#{organism}[organism] AND #{@gene}[gene]", { "db"=>"nucleotide", "rettype"=>"gb", "retmax"=> retmax})
+      curr_id = 0
+      while curr_id < n_ids.length
+        yield Bio::GenBank.new(@ncbi.efetch(ids = n_ids[curr_id], {"db"=>"nucleotide", "rettype"=>"gb", "retmax"=> 1}))
+        curr_id += 1
+      end
+    rescue Errno::ECONNRESET
+      if locker >= 3
+        raise
+      end
+      locker += 1
+      sleep 2
     end
   end
   
