@@ -16,6 +16,7 @@ if ARGV.length == 1
       options[:genes][key] = options[:genes][key].inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
     end
     species = File.open(options[:species], "r").readlines.map {|line| line.chomp}
+    unless options.keys.include?(:phy_method) then options[:phy_method]="nothing" end
   rescue Exception => msg
     puts "Error: cannot load settings file. Either malformed or non-existant."
     puts "Printing error message, then exiting..."
@@ -43,7 +44,9 @@ if options[:hawkeye]
   cap.check
   puts " - Secondary check complete..."
 end
-cap.phylogen
-puts " - Phylogeny building complete..."
+unless options[:phy_method]=="nothing" then
+  cap.phylogen
+  puts " - Phylogeny building complete..."
+end
 cap.cleanup
 puts ".Finished."

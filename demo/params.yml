@@ -12,7 +12,7 @@
 #Species list
 species: /home/will/Code/phyloGenerator2/demo/species.txt
 #Output directry (must aready exist)
-working_dir: /home/will/test/
+working_dir: /some/directory/that/exists/
 #Email address for downloads
 email: will.pearse@gmail.com
 
@@ -31,7 +31,7 @@ genes:
     max_gaps: 10
     max_dwn: 10
   matK:
-    ref_file: /home/will/Code/phyloGenerator2/demo/rbcL_reference.fasta
+    ref_file: /home/will/Code/phyloGenerator2/demo/matK_reference.fasta
     ref_min: 400
     ref_max: 1500
     gap_length: 5
@@ -41,10 +41,10 @@ genes:
 ######################
 #OPTIONS##############
 ######################
-# - with the exception of 'phy_method' none of these must be given
 # - there is no 'false' value that must be supplied
+# - to not do one of the following, just comment it out
 #Which program to use for phylogenetic search
-#phy_method: examl
+phy_method: examl
 phy_method: raxml
 #phy_method: exabayes
 #Whether to perform secondary check of sequences

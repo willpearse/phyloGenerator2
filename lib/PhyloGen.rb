@@ -55,7 +55,9 @@ class PhyloGen
     genes.each do |gene|
       Bio::FastaFormat.open("phylo_#{@this_phylogen}_#{gene}_mafft.fasta").each_entry do |seq|
         seq = seq.to_biosequence
+        puts seq
         sp = @spp_lookup[seq.definition.split("_")[0...-1].join("_")]
+        puts sp
         if seqs.include? sp
           seqs[sp] = Bio::Sequence.new(seqs[sp] + seq)
         else
