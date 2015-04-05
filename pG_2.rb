@@ -43,7 +43,7 @@ if options[:hawkeye]
   cap.check
   puts " - Secondary check complete..."
 end
-cap.hulk
+cap.phylogen
 puts " - Phylogeny building complete..."
 cap.cleanup
 puts ".Finished."

@@ -14,9 +14,9 @@ describe Cap do
       downloaded = Dir["*.fasta"]
       assert missed == species.reject {|sp| downloaded.any? {|x| x[sp] } }
       test.check
-      test.hulk
+      test.phylogen
       test.cleanup
-      cache = Cap.new(species, ["rbcL"], Dir.getwd+"/thor", {:rbcL=>{:ref_file=>"/home/will/Code/phyloGenerator2/demo/rbcL_reference.fasta", :ref_min=>400,:ref_max=>1500,:gap_length=>5,:max_gaps=>10,:max_dwn=>10}}, 'examl', false)
+      cache = Cap.new(species, ["rbcL"], Dir.getwd+"/seqs", {:rbcL=>{:ref_file=>"/home/will/Code/phyloGenerator2/demo/rbcL_reference.fasta", :ref_min=>400,:ref_max=>1500,:gap_length=>5,:max_gaps=>10,:max_dwn=>10}}, 'examl', false)
       cache.download
     end
   end
