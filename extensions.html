@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>phyloGenerator2</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>phyloGenerator2</h1>
+        <p>automated phylogenetics for brave</p>
+	
+	<p class="view"><a href="faq.html">FAQ</a> - <a href="http://www.willpearse.com/">Who?</a> - <a href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12055/abstract">Citation</a> - <a href="https://groups.google.com/forum/#!forum/phylogenerator-users">Mailing List</a></p>
+        <ul>
+          <li><a href="install.html"><strong>Install</strong></a></li>
+          <li><a href="guide.html"><strong>Guide</strong></a></li>
+	  <li><a href="extending.html"><strong>Extending</strong></a></li>
+        </ul>
+      </header>
+      <section>
+	<h3><a class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h3>
+	<p><a href="http://willpearse.github.io/phyloGenerator/scripting.html">Like phyloGenerator1</a>, I built pG2 with the intention of making it easily extendable. That said, I think I did a slightly better job with pG2!</p>
+	<p>There are five major components of pG2:</p>
+	<ul>
+	  <li><em>pG</em>2.rb_ - handles all arguments to the program, and runs everything</li>
+	  <li><em>Cap.rb</em> - the 'God Class' that keeps everything running, and handles the next three modules (which do all the work)</li>
+	  <li><em>Download.rb</em> - downloads all sequences, and does basic sequence checking.</li>
+	  <li><em>Hawkeye.rb</em> - performs secondary sequence checks (the <em>Hawkeye</em> method).</li>
+	  <li><em>PhyloGen.rb</em> - build phylogenies</li>
+	</ul>
+	<p>...they used to have different, slightly more amusing, names during early development if you go back through the Git entries.</p>
+	<p>Take a look at <em>Cap.rb</em> to figure out what's going on; there's really nothing very complex going on behind the scenes, honest. It's quite sobering to me just how much simpler all of this is than the original pG1 was; the user interface was almost all of what I was focusing on.</p>
+	<h3><a class="anchor" aria-hidden="true"><span class="octicon octicon-link"></span></a>More details</h3>
+	<p>Each of the modules assumes its current working directory is somewhere it can write things out, and that either contains a set of <code>genus_species_gene.fasta</code> files it can use to build a phylogeny, or that its main job is to create such files. <em>Download</em> creates these files, <em>Hawkeye</em> renames the bad ones such that <em>PhyloGen</em> can simply build a phylogeny from what it sees. Every module takes arguments that are fairly self-explanatory, and a Hash of additional parameters that are all described in the Guide to pG2 on this website. This is the simplest way of sharing <em>state</em> among the different modules, without creating some sort of convoluted database, and it makes it <em>ridiculously</em> easy to manipulate sequence identities etc.</p>
+	<p>Each of the modules also assumes it has access to the programs it needs through the shell; in other words this means that if you have set up pG2 so that it works properly so will all its subcomponents on their own.</p>
+	<p>I achieve some degree of parallelism by simply calling each module in its own thread. It would be trivial to re-call <em>Download</em> with a new set of species once <em>Hawkeye</em> has removed sequences from the overall pool.</p>
+	<p>If you're interested in using different methods and programs inside <em>phyloGenerator2</em>, it's trivial to alter the relevant parts of each component.</p>
+      </section>
+
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/willpearse">willpearse</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

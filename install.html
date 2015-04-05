@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>phyloGenerator2</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>phyloGenerator2</h1>
+        <p>automated phylogenetics for brave</p>
+	
+	<p class="view"><a href="faq.html">FAQ</a> - <a href="http://www.willpearse.com/">Who?</a> - <a href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12055/abstract">Citation</a> - <a href="https://groups.google.com/forum/#!forum/phylogenerator-users">Mailing List</a></p>
+        <ul>
+          <li><a href="install.html"><strong>Install</strong></a></li>
+          <li><a href="guide.html"><strong>Guide</strong></a></li>
+	  <li><a href="extending.html"><strong>Extending</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h3>
+
+        <h3>
+<a class="anchor"aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h3>
+<p>
+  pG2 should work on any computer, but my instructions/help is better
+  for Mac/Linux because that's what I'm more familiar with. My inuition
+  is that, if you already do some phylogenetics, you should be able to
+  get pG2 installed within seconds. If you want a one-click download,
+  consider using <a href="http://willpearse.github.io/phyloGenerator/">phyloGenerator
+  1</a>.
+</p>
+
+<p>
+For every operating system, the basic steps are to install:
+
+<ul>
+  <li><a href="https://www.ruby-lang.org/en/downloads/">Ruby</a></li>
+  <li><a href="https://rubygems.org/gems/bio/versions/1.4.3.0001">BioRuby</a>, a 'Gem' (library) for Ruby</li>
+  <li><a href="http://mafft.cbrc.jp/alignment/software/">MAFFT</a></li>
+  <li>At least one of:
+    <ul><li><a href="https://github.com/stamatak/standard-raxml/">RAxML (probably the easiest)</a></li>
+      <li><a href="https://github.com/stamatak/ExaML/">ExaML</a></li>
+      <li><a href="http://sco.h-its.org/exelixis/web/software/exabayes/">ExaBayes</a></li>
+    </ul></li>
+  <li>Make sure each program can be run from the command line by typing
+    <em>mafft</em>, <em>raxml</em>, <em>examl</em> & <em>parse-examl</em>
+    (ExaML), or <em>yyggdrasil</em> (part of ExaBayes). This means changing the
+    names of the RAxML and ExaML binaries, and copying things into
+    wherever you keep programs you can run from the command line.</li>
+</ul>
+</p>
+
+<a class="anchor"aria-hidden="true"><span class="octicon octicon-link"></span></a>Linux (Ubuntu)</h3>
+<ol style="list-style-type: decimal">
+<li><em>sudo apt-get install ruby mafft</em></li>
+<li><a href="http://www.sysads.co.uk/2014/05/install-open-mpi-1-8-ubuntu-14-04-13-10/">Only if using ExaML or ExaBayes, install open-mpi</a></li>
+<li>Either run (as <em>sudo</em>) or, preferably, step through, everything in <em>install_linux.sh</em>.</li>
+</ol>
+
+<a class="anchor"aria-hidden="true"><span class="octicon octicon-link"></span></a>Mac OSX</h3>
+<ol style="list-style-type: decimal">
+<li>Open Terminal</li>
+<li><em>sudo gem install bio</em></li>
+<li><a href="http://mafft.cbrc.jp/alignment/software/">Install MAFFT</a></li>
+<li>If you wish to use ExaML, install OpenMPI. My advice would be to use somethin like <a href="http://brew.sh/">Homebrew</a> to keep track of packages; I can't give any specific advice about this on Mac I'm afraid.</li>
+<li>Follow the steps in <em>install_linux.sh</em>. You may need to copy somewhere other than the default install directory; run <em>echo $PATH</em> to see where your executable are stored normally.</li>
+</ol>
+
+<a class="anchor"aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows (PC)</h3>
+<p>I can't really give any more precise tips than the overview at the beginning of this page. If you successfully install pG2 on Windows, please do let me know how you did it! There's a beer in it for you!</p>
+
+
+<footer>
+        <p>This project is maintained by <a href="https://github.com/willpearse">willpearse</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

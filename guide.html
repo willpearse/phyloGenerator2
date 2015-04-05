@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>phyloGenerator2</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>phyloGenerator2</h1>
+        <p>automated phylogenetics for brave</p>
+	
+	<p class="view"><a href="faq.html">FAQ</a> - <a href="http://www.willpearse.com/">Who?</a> - <a href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12055/abstract">Citation</a> - <a href="https://groups.google.com/forum/#!forum/phylogenerator-users">Mailing List</a></p>
+        <ul>
+          <li><a href="install.html"><strong>Install</strong></a></li>
+          <li><a href="guide.html"><strong>Guide</strong></a></li>
+	  <li><a href="extending.html"><strong>Extending</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h3><a class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Premable</h3>
+	<p>I <em>strongly advise you</em> to check the output from each step of pG2. Building a phylogeny is pointless if you alignment is awful, and using a phylogeny is pointless if you're not confident in the accuracy of that phylogeny (via bootstrapping, replicates, and the like).</p>
+	<p>phyloGenerator2 goes in a different direction to phyloGenerator1: whereas before I went to great pains to neaten output, check what you were doing, and provide a tidy user interface, I don't do that here. This means you get to the good stuff much quicker, but it also means there is a burden on you, as the user, to somewhat understand what you're doing. For example, I don't neaten the RAxML output: you get everything, raw. <a href="http://willpearse.github.io/phyloGenerator/"><em>If you want a single, one-click, ecologist-friendly program please use phyloGenerator1</em></a>, or the <a href="http://cran.r-project.org/web/packages/pez/index.html"><em>phy.build</em> family in <em>pez</em></a>; these options will get you an accurate phylogeny without any fuss, and once you're comfortable with them you're probably ready for phyloGenerator2.</p>
+        <h3><a class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>New Methods</h3>
+	<h4>Hawkeye</h4>
+	<p>My usual approach to phylogenetics is to build an alignment, identify the sequences in it that are obviously nonsense because they:</p>
+	<ul>
+	  <li>are vastly longer than the other sequences</li>
+	  <li>don't align with them (i.e., are in one long stream at the end)</li>
+	  <li>have somehow aligned (badly) with some regions and have vast gaps between those regions (a common problem with MUSCLE, I find, but other methods too)</li>
+	</ul>
+	<p>...and then I remove them. <em>referenceDownlad</em> in pG1 handled some of these, but the last two things still cropped up occasionally (but rarely). In pG2, I've added the <em>Hawkeye</em> method, which actively looks for sequences with gaps where the consensus alignment doesn't have them, and then removes them. In my own experiments, I've found it means I spend a tenth of the time cleaning alignment than I used to; Your Mileage May Vary, but I encourage you to play around with its options and see what you end up with.</p>
+	<h4>referenceDownload</h4>
+	<p>phyloGenerator2 forces you to use the <em>referenceDownload</em> method from the original phyloGenerator. This means that you must supply it with an example of what some sequences for each locus should look like, and pG2 will find sequences that align well with that sequence (as defined by the parameters to follow). Finding such reference sequences is easy: go to GenBank and find some! Just a handful of sequences will do the job, and while more is probably better, too many (&gt;100) and sequence download could get a bit slow. This is not an unusual requirement for a program like pG2; <a href="http://phlawd.net/">phlawd</a> and <a href="https://code.google.com/p/ncbiminer/">NCBIminer</a> have the same requirement. pG2 uses alignment to find these sequences; I think this is faster, and I like that it's based around what you're actually going to use in phylogenetic construction and doesn't rely on similarity of sequences (similarity --&gt; closely related, so could affect our answer). Your Mileage May Vary!</p>
+        <h3><a class="anchor" href="#basics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basics</h3>
+	<p>You need three things to do a phyloGenerator2 run:</p>
+	<ul>
+	  <li>A parameter file</li>
+	  <li>A species list</li>
+	  <li>Reference sequences for each locus you want to download</li>
+	</ul>
+	<p>The <em>demo</em> folder contains examples of all of these things. Remember to <em>always use absolute paths</em> within your parameter file, and to enter your own email address into it otherwise you'll get into trouble with GenBank. You can write comments into your parameter file by putting a <em>#</em> at the start of them. The parameter file is just a <a href="http://yaml.org/">YAML</a> file. The demo parameter file (<em>demo.yml</em>) contains everything you need to know to get started. All parameters are set with <em>:</em>; for example <em>email : me@gmail.com</em> would set you email address. Spaces don't matter.</p>
+        <h3><a class="anchor" href="#download" aria-hidden="true"><span class="octicon octicon-link"></span></a>DNA Download</h3>
+	<p>In the parameter file, section consists of a <em>genes</em> block, within which there is another block for each gene you want to download data from. In the demo, you have: <em>genes:   rbcL:</em></p>
+	<p>...which basically just means &quot;start my genes block&quot;, and &quot;my first gene is called rbcL&quot;. Each of the parameters after that are:</p>
+	<ul>
+	  <li><em>ref_file</em> - the location of your reference sequence file (FASTA format), as described in _overview)</li>
+	  <li><em>ref_min</em> - the minimum length a downloaded sequence must be</li>
+	  <li><em>ref_max</em> - the maximum length of an alignment of your sequence when aligned with <em>ref_file</em>. This will also be used for the <em>hawkeye</em> method (see below).</li>
+	  <li><em>max_dwn</em> - maximum number of sequences to try for each species</li>
+	  <li><em>fussy</em> - (optional) if present and set to <em>true</em>, don't use GenBank <em>gene</em> and <em>organism</em> annotations, and don't attempt to trim a sequence down using GenBank annotations.</li>
+	  <li><em>gap_length</em> - (<em>hawkeye</em> only) maximum number of gaps in sequence when aligned</li>
+	  <li><em>gap_length</em> - (<em>hawkeye</em> only) length that defines a gap in <em>gap_length</em></li>
+	</ul>
+	<p>There are no hard and fast rules for how to choose these parameters; I tend to set <em>ref_file</em> to be just less than half the expected length of the locus to get partial sequences (if I want them), and I set <em>ref_max</em> to be about 120% of the length of my reference sequences. <em>fussy</em> is useful if you're worried about weird GenBank naming conventions; I find that 16s,18s, etc. sequences don't have useful annotations, and so limiting my search on the basis of them means I never find anything. phyloGenerator1 handles all this for you automatically, but many of you wanted flexibility so here it is!</p>
+        <h3><a class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options</h3>
+	<p>The following options are all optional, and most of them turn on what I consider to be useful features of pG2. The most useful one is arguably <em>cache</em>; using it you download once, and then play with different options for subsetting sequences and building phylogenies.</p>
+	<ul>
+	  <li><p><em>hawkeye</em> - if present and set to <em>true</em>, runs the new <em>hawkeye</em> sequence check. The parameters are described in the last section, and the new method is dscribed at the top of this page. If you use this option, you'll get a new folder (<em>hawkeye</em>) in your output, with a load of species that are re-named to mark them as 'bad'. Anything still in the <em>seqs</em> folder has passed the <em>hawkeye</em> check.</p></li>
+	  <li><p><em>cache</em> - skip DNA download for all species that have <em>at least one</em> DNA sequence (as outputted by pG2) in this folder. Note that a single sequence will be sufficient to stop further searches. There's no point in searching for the same species over and over again if you didn't find anything the first time and the settings haven't changed; just remove those species from your species list the second time.</p></li>
+	  <li><p><em>phy_method</em> - either <em>raxml</em>, <em>examl</em>, or <em>exabayes</em>, depending on which program you want to use to build you phylogeny. You don't have to supply this option; giving nothing will just download sequences.<br /> If using ExaBayes, bear in mind that pG2 does no summarising of the posterior, unlike pG1. The reason for this is simple: despite my warnings, people who had no idea how to conduct a Bayesian analysis were using pG, and so many were not checking for mixing, convergence, that they had sufficient samples, etc. I then received a number of very angry emails from people who hadn't followed instructions (and had often ignored pG1's warnings) that their results were &quot;obviously false&quot;. I don't enjoy being shouted at, so I dropped support for this.</p></li>
+	  <li><p><em>constraint</em> - location of (Newick) constraint tree to be used in your build. Note that only RAxML supports a constraint tree at this time, and nothing supports any kind of dating (yet; I plan to add it). Your constraint tree must contain all of the species you are attempting to download data for, but if you can't find some data for some species pG2 will just drop those species for you.</p></li>
+	  <li><p><em>partition</em> - if <em>true</em>, a separate rate matrix will be fit to each locus, along with gamma parameters et al. I can't imagine you would want to set this to false.</p></li>
+	</ul>
+	<p><em>phy_options</em> - each phylogenetic construction program has special options that can be passed to it. I've not written a parser for each program, as I did in pG1, but I have written some examples of common things you might want to do that essentially replicates the work of pG1. Experience tells me most users want to do something I hadn't thought of; you wanted the power, now you've got it!</p>
+        <h3><a class="anchor" href="#output" aria-hidden="true"><span class="octicon octicon-link"></span></a>Output</h3>
+	<p>The output varies a little depending on what options you choose, but if you do everything in one step you'll get three folders: <em>seqs</em> with the best sequences, <em>phylo</em> with the phylogeny output, and <em>bad_seqs</em> without the output from <em>hawkeye</em>. In almost all cases, all sequences are in FASTA format, and GenBank IDs are inside the files themselves. The naming of the files should be fairly self-explanatory!</p>
+        <h3><a class="anchor" href="#tips" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tips and Tricks</h3>
+	<ul>
+	  <li><p>To make a FASTA file with each locus' sequences, just <em>cat   *_locus.fasta &gt; combined_locus.fasta</em>. If you want a concatenated *alignment of all the species, it's in your <em>phylo</em> folder.</p></li>
+	  <li><p>If you want to add more loci, just make a new search with all your species and just those loci. Then, copy-paste all the sequences from this run with your last run(s), and you have a <em>cache</em> folder you can use.</p></li>
+	  <li><p>If you want a concatenated alignment, look in the <em>phylo</em> folder; there should be one there (in various file formats that are partially a function of the phylogenetic program you're using)</p></li>
+	</ul>
+      </section>
+
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/willpearse">willpearse</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
