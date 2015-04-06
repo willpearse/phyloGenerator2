@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>phyloGenerator2</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>phyloGenerator2</h1>
+        <p>automated phylogenetics for brave</p>
+	
+	<p class="view"><a href="faq.html">FAQ</a> - <a href="http://www.willpearse.com/">Who?</a> - <a href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12055/abstract">Citation</a> - <a href="https://groups.google.com/forum/#!forum/phylogenerator-users">Mailing List</a></p>
+        <ul>
+          <li><a href="install.html"><strong>Install</strong>start here</a></li>
+          <li><a href="guide.html"><strong>Guide</strong>read me</a></li>
+	  <li><a href="extending.html"><strong>Extending</strong>for coders</a></li>
+        </ul>
+      </header>
+      <section>
+        <h3>
+<a class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h3>
+	
+	<ul>
+	  <li><p><em>Should I use version 1 or 2?</em><br />Go with version 1 if you're new to phylogenetics. Version 2 is designed for building <em>extremely large phylogenies</em>; it's not the place to start for a beginner. Version 1 still works great, and is perfect for medium-seized phylogenies. Version 2 is fast, but therefore more inherently dangerous!</p></li>
+	  <li><p><em>Do I have to install all the programs?</em><br />No. Only the ones you need, which are Ruby, BioRuby, MAFFT, and one of the phylogenetics programs.</p></li>
+	  <li><p><em>The install script doesn't work for me</em><br />Make sure you have given the script permission to run (<em>chmod +x install.sh</em>). Beyond that... I'm not able to give much more help (see below) but I'd suggest you try looking on the websites of each of the programs on their own for more help.</li>
+	  <li><p><em>Why isn't there a single-download like there was for phyloGenerator 1</em><br />Fundamentally, pG2 is written for people who are not complete beginners. Installing phylogenetics software is something most phylogeneticists have already done, so there's no need for me to bundle up things that you probably already have.<br />Please do not underestimate the complexity of getting a program like phyloGenerator into a single download. It took almost as long to get that thing working as it did to actually write the program, and maintaining it is an extremely intensive process.<br />Each program within <em>pG1</em> was extremely difficult to get working. If you don't believe me... you've never tried something like that. I have committed to maintaining <em>pG1</em> for as long as I can in that state; I can't even begin to start with a new version.</p></li>
+	  <li><p><em>Why haven't you written an install script for Windows?</em><br />Such a thing would be very, very difficult for me (see answer to the above). On a side-note, I've not been on Windows for ~5 years <a href="http://www.ubuntu.com/">(try Ubuntu, honestly, it's great)</a>.</p></li>
+	</ul>
+	<a class="anchor" href="#dnadownload" aria-hidden="true"><span class="octicon octicon-link"></span></a>DNA Download</h3>
+	<ul>
+	  <li><p><em>It can't find any sequences, even thought I know they're there on GenBank</em><br />The purpose of the checking and cleaning algorithms is to find <em>good</em> sequences. The sequences you've found didn't pass the quality tests!</p></li>
+	  <li><p><em>No, seriously, I can't find any sequences and I <em>know</em> there are good ones</em><br />Make sure you've set your alignment length options correctly (see guide). If you set them such that your own reference sequences wouldn't pass, you'll never find anything.</p></li>
+	  <li><p><em>How should I choose my reference sequences? What are good search parameters?</em><br />See the guide on this website. If that doesn't answer your question, try the <a href="https://groups.google.com/forum/#!forum/phylogenerator-users">mailing list</a>.</p></li>
+	  <li><p><em>I used the Hawkeye option and now I've got very few good sequences</em><br />Consider using the sequences you have now as the references sequences for a new search. Remember, there is also a <em>cache</em> option</p></li>
+	</ul>
+	<a class="anchor" href="#phylbuild" aria-hidden="true"><span class="octicon octicon-link"></span></a>Phylogeny building</h3>	
+	<ul>
+	  <li><p><em>This is taking too long</em><br />In general, building large phylogenies is a very time-consuming process. It could easily take longer than the sequence downloads, particularly if you're running the whole thing on a laptop. If it's taking much longer than you think it should given the size of the problem, check the quality of your alignment. Bad alignments --&gt; slower phylogeny searches and (most importantly) bad answers.</p></li>
+	  <li><p><em>Why can I only use a constraint tree with RAxML?</em><br />...because that's the only program that supports them :D</p></li>
+	  <li><p><em>Where did support for BEAST go?</em><br />BEAST is still supported in pG1. Remember that output from pG2 is still useable is pG1, or (and this is probably the best option), you can take your alignments and build your own XML file in BEAST. Maintaing the BEAST XML templating engine is a huge drain on my time for pG1, and I'm keen not to do it twice.</p></li>
+	  <li><p><em>Do I have to edit my constraint tree if not all my species are in there, like in pG1?</em><br \>No. Just make sure that all the species you're building a tree of are in the constraint tree at the start!<br />In passing, in pG1 it's quite easy to just write out your sequences, then drop your constraint tree to the species list you now know. I actually <em>intended</em> it to be used like that, and given that pG1 supports dated constraint tree it's actually the only way that makes sense to build a tree (I think).</p></li>
+	  <li><em>Why are all the species names in my concatenated alignent so weird?</em><br />Some programs require PHYLIP format alignments and have limitations on the elngth of species names. If you search for species with long genus names, you could get duplication, so I replaced everything with long alphabetical strings to ensure there are no collisions.</li>
+	</ul>
+	<a class="anchor" href="#philqs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deeper questions</h3>
+	<ul>
+	  <li><p><em>Is it safe to have beginners building phylogenies &quot;automatically&quot;?</em><br />Possibly not; please remember pG2 is not designed for the beginner.</p></li>
+	  <li><p><em>I don't like the idea of automated phylogenies; without user checking something could go wrong</em><br />I don't recommend you use pG2 without some checking; it's a tool to speed things up, not to do everything. However, do consider something for a moment: <em>who watches the watchmen?</em> pG2 is reproducible and describes itself perfectly in its code. Manually altering an alignment or constraint tree until it satisfies a condition that you yourself cannot describe is not. I would suggest that is is better to be wrong and be falsifiable (in this context reproducible and describable) than to claim 'correctness' with no means of verification.</p></li>
+	  <li><p><em>What about fossil constraints?</em><br />I agree; I want to (at the very least) put treePL in here. More soon, I hope.</p></li>
+	</ul>
+	<a class="anchor" href="#morehelp" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting more help</h3>
+	<p>I'm really sorry if you're having problems that none of the above can help you with. Please, please, please do get in contact if you're having trouble getting the program to work. I will do everything I can to help you, but I can help you best if you follow the checklist below (in order, I guess):</p>
+	<ol style="list-style-type: decimal">
+	  <li><p><em>Read this website, <a href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12055/abstract">the original pG paper</a>, and <a href="https://groups.google.com/forum/#!forum/phylogenerator-users">search the mailing list</a></em><br />Most questions are answered somewhere on one of those three things.</p></li>
+	  <li><p><em>Simplify your problem to the bare minimum</em><br />By working with the simplest example that generates the problem, you make it easier for me to isolate the problem. Please find the closest thing you can to a <a href="http://stackoverflow.com/help/mcve">minimal, complete, verifiable example</a> - 9/10 this process will help you find the solution anyway.</p></li>
+	  <li><em>Give me what I need to solve your problem</em><br />I need to know:
+	    <ul>
+	      <li>The <em>entire</em> error message (<em>please</em> don't 'give me the gist'!) and all preceeding output</li>
+	      <li>Your input, <em>i.e.</em>, the parameter file, your reference sequences, and the species list. I promise never to share it with anyone.</li>
+	      <li>What operating system you're using and its version (<em>e.g.</em>, Windows 8.1, Mac OS 10.10.1)</li>
+	  </ul></li>
+	  <li><p><a href="https://groups.google.com/forum/#!forum/phylogenerator-users"><em>Use the mailing list</em></a><br />I get <em>a lot</em> of emails about pG, and many of them are about the same thing. I set up the mailing list to help with this.</p></li>
+	</ol>
+	<p>I like talking to people, and I like helping people. If you get in touch with me, I promise I will do everything I can to help you. Don't be put off by a four-point list of things to do; I'm not an ogre, and I will buy you a beer if you get in touch...</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/willpearse">willpearse</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
