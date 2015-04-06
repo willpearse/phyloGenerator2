@@ -8,7 +8,7 @@ require "bio"
 class PhyloGen
   @@n_phylogen = 0
   @@n_runs = 0
-  def initialize(method="raxml", partition=false, model_params={})
+  def initialize(method="raxml", partition=false, model_params="")
     @this_phylogen = @@n_phylogen
     @@n_phylogen += 1
     @model_params = model_params
@@ -55,9 +55,7 @@ class PhyloGen
     genes.each do |gene|
       Bio::FastaFormat.open("phylo_#{@this_phylogen}_#{gene}_mafft.fasta").each_entry do |seq|
         seq = seq.to_biosequence
-        puts seq
         sp = @spp_lookup[seq.definition.split("_")[0...-1].join("_")]
-        puts sp
         if seqs.include? sp
           seqs[sp] = Bio::Sequence.new(seqs[sp] + seq)
         else
@@ -85,11 +83,11 @@ class PhyloGen
       #Ha! this is shit...
       `Rscript -e "require(ape);t<-read.dna('phylo_#{@this_phylogen}.phylip');t<-rtree(nrow(t),tip.label=rownames(t),br=NULL);write.tree(t,'phylo_#{@this_phylogen}_#{@@n_runs}.tre')"`
       `parse-examl -s phylo_#{@this_phylogen}.phylip -n phylo_#{@this_phylogen}_#{@@n_runs}_parse -m DNA#{@parse_string}`
-      `examl -s phylo_#{@this_phylogen}_#{@@n_runs}_parse.binary -p #{Random.rand(100000)} -m PSR -n phylo_#{@this_phylogen}_#{@@n_runs} -t phylo_#{@this_phylogen}_#{@@n_runs}.tre#{@phy_string}`
+      `examl -s phylo_#{@this_phylogen}_#{@@n_runs}_parse.binary -p #{Random.rand(100000)} -m PSR -n phylo_#{@this_phylogen}_#{@@n_runs} -t phylo_#{@this_phylogen}_#{@@n_runs}.tre#{@phy_string} #{@model_params}`
     when "exabayes"
-      `yggdrasil -f phylo_#{@this_phylogen}.phylip -s #{Random.rand(100000)} -m DNA -n phylo_#{@this_phylogen}_#{@@n_runs}#{@phy_string}`
+      `yggdrasil -f phylo_#{@this_phylogen}.phylip -s #{Random.rand(100000)} -m DNA -n phylo_#{@this_phylogen}_#{@@n_runs}#{@phy_string} #{@model_params}`
     when "raxml"
-      `raxml -s phylo_#{@this_phylogen}.phylip -p #{Random.rand(100000)} -m GTRGAMMA -n phylo_#{@@n_phylogen}_#{@@n_runs}#{@phy_string}`
+      `raxml -s phylo_#{@this_phylogen}.phylip -p #{Random.rand(100000)} -m GTRGAMMA -n phylo_#{@@n_phylogen}_#{@@n_runs}#{@phy_string} #{@model_params}`
     else
       raise RuntimeError, "PhyloGen called with unsupported method #{@method}"
     end

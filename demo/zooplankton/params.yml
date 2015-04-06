@@ -1,0 +1,94 @@
+#Demo / example parameter file for phyloGenerator2
+# - The gene section is nested: there is one entry for each gene,
+#         and each gene has its own options
+# - Not all of the options are turned on;
+#         uncomment sections to try them out
+
+#Start of options
+
+######################
+#BASICS###############
+######################
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#ALTER EVERYTHING IN THIS SECTION!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#Species list
+species: /home/will/Documents/zooplankton/fewer.spp.txt
+#Output directry (must aready exist)
+working_dir: /home/will/Documents/zooplankton/
+#Email address for downloads
+email: you@name.com
+
+######################
+#DNA DOWNLOAD#########
+######################
+#Each gene has its own section
+#gap_length and max_gaps are only required if
+#  performing secondary DNA check (:hawkeye=>true)
+genes:
+  12s:
+    ref_file: /home/will/Documents/zooplankton/ref_seqs/12s.fasta
+    ref_min: 300
+    ref_max: 800
+    gap_length: 20
+    max_gaps: 20
+    max_dwn: 10
+    fussy: false
+  16s:   
+    ref_file: /home/will/Documents/zooplankton/ref_seqs/16s.fasta
+    ref_min: 400
+    ref_max: 700
+    gap_length: 20
+    max_gaps: 10
+    max_dwn: 10
+    fussy: false
+  18s:   
+    ref_file: /home/will/Documents/zooplankton/ref_seqs/18s.fasta
+    ref_min: 300
+    ref_max: 800
+    gap_length: 20
+    max_gaps: 10
+    max_dwn: 10
+    fussy: false
+  28S:   
+    ref_file: /home/will/Documents/zooplankton/ref_seqs/28s.fasta
+    ref_min: 400
+    ref_max: 1000
+    gap_length: 20
+    max_gaps: 10
+    max_dwn: 10
+    fussy: false
+  COI:   
+    ref_file: /home/will/Documents/zooplankton/ref_seqs/COI.fasta
+    ref_min: 400
+    ref_max: 800
+    gap_length: 20
+    max_gaps: 10
+    max_dwn: 10
+    fussy: false
+  NADH:   
+    ref_file: /home/will/Documents/zooplankton/ref_seqs/NADH.fasta
+    ref_min: 500
+    ref_max: 1000
+    gap_length: 20
+    max_gaps: 10
+    max_dwn: 10
+    fussy: false    
+      
+######################
+#OPTIONS##############
+######################
+# - with the exception of 'phy_method' none of these must be given
+# - there is no 'false' value that must be supplied
+#Which program to use for phylogenetic search
+#phy_method: examl
+phy_method: raxml
+#phy_method: exabayes
+#Whether to perform secondary check of sequences
+#hawkeye: true
+#Constraint tree
+#constraint: /home/will/Code/phyloGenerator2/demo/constraint.tre
+#Whether to fit different DNA models for each gene ('partitions')
+partition: true
+#Whether to load DNA data from a previous run ('cached' run)
+#cache: /home/will/Documents/zooplankton/cache/

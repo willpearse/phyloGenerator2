@@ -5,10 +5,10 @@ require_relative "Hawkeye.rb"
 require 'fileutils'
 
 class Cap
-  def initialize(species, genes, cache=nil, dwn_args={}, phylo_method="examl", partition=false, constraint=false)
+  def initialize(species, genes, cache=nil, dwn_args={}, phylo_method="examl", partition=false, constraint=false, phylo_args="")
     @species = Marshal::load(Marshal.dump(species)) #Multicore --> copy paranoia
     @genes = genes
-    @phylo_builder = PhyloGen.new(phylo_method, partition)
+    @phylo_builder = PhyloGen.new(phylo_method, partition, phylo_args)
     @cache = cache
     if @cache
       unless @cache[-1]=="/" then @cache+="/" end

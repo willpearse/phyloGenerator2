@@ -5,7 +5,8 @@
 require "yaml"
 require_relative "lib/Cap.rb"
 
-puts "phyloGenerator 2.0 - BETA version DOI: 10.1111/2041-210X.12055"
+puts "phyloGenerator 2.0-0 DOI: 10.1111/2041-210X.12055"
+puts "Please *use with caution*; first version!"
 puts "Will Pearse - will.pearse@gmail.com"
 if ARGV.length == 1
   begin
@@ -16,6 +17,7 @@ if ARGV.length == 1
       options[:genes][key] = options[:genes][key].inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
     end
     species = File.open(options[:species], "r").readlines.map {|line| line.chomp}
+    unless options.keys.include?(:phylo_args) then options[:phylo_args] = "" end
     unless options.keys.include?(:phy_method) then options[:phy_method]="nothing" end
   rescue Exception => msg
     puts "Error: cannot load settings file. Either malformed or non-existant."
@@ -37,7 +39,7 @@ Dir.chdir options[:working_dir]
 
 #Run
 puts " - Setup complete..."
-cap = Cap.new(species, options[:genes].keys.map(&:to_s), options[:cache], options[:genes], options[:phy_method], options[:partition], options[:constraint])
+cap = Cap.new(species, options[:genes].keys.map(&:to_s), options[:cache], options[:genes], options[:phy_method], options[:partition], options[:constraint], options[:phylo_args])
 cap.download
 puts " - Download complete..."
 if options[:hawkeye]
