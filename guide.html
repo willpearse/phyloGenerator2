@@ -58,7 +58,8 @@
 	  <li><em>ref_min</em> - the minimum length a downloaded sequence must be</li>
 	  <li><em>ref_max</em> - the maximum length of an alignment of your sequence when aligned with <em>ref_file</em>. This will also be used for the <em>hawkeye</em> method (see below).</li>
 	  <li><em>max_dwn</em> - maximum number of sequences to try for each species</li>
-	  <li><em>fussy</em> - (optional) if present and set to <em>true</em>, don't use GenBank <em>gene</em> and <em>organism</em> annotations, and don't attempt to trim a sequence down using GenBank annotations.</li>
+	  <li><em>fussy</em> - (optional) if present and set to <em>false</em>, don't use GenBank <em>gene</em> and <em>organism</em> annotations, and don't attempt to trim a sequence down using GenBank annotations.</li>
+	  <li><em>aliases</em> - an array of alternative names for your gene. For example, if your block was called <em>COI</em>, and you specified <em>aliases = [cytochrome oxidase one, cox1]</em>, pG2 would search for <em>COI</em>, <em>cytochrome oxidase one</em>, and <em>cox1</em>. You must use the square brackets (<em>[]</em>) otherwise bad things will happen.</li>
 	  <li><em>gap_length</em> - (<em>hawkeye</em> only) maximum number of gaps in sequence when aligned</li>
 	  <li><em>gap_length</em> - (<em>hawkeye</em> only) length that defines a gap in <em>gap_length</em></li>
 	</ul>
