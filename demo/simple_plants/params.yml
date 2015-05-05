@@ -26,6 +26,7 @@ email: your@name.com
 #Each gene has its own section
 #gap_length and max_gaps are only required if
 #  performing secondary DNA check (:hawkeye=>true)
+#NOTE: you can specify aliases (see commented regions) for genes too
 genes:
   rbcL:
     ref_file: /home/will/Code/phyloGenerator2/demo/rbcL_reference.fasta
@@ -34,6 +35,7 @@ genes:
     gap_length: 20
     max_gaps: 10
     max_dwn: 10
+    #aliases: [ribulose bisphosphate, any other name for this locus]
   matK:
     ref_file: /home/will/Code/phyloGenerator2/demo/matK_reference.fasta
     ref_min: 400

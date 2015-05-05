@@ -14,7 +14,11 @@ class Download
     @species_fail = []
     @id = @@n_download
     @@n_download += 1
-    @gene = gene
+    if args.include? :aliases
+      @gene = [gene] + args[:aliases]
+    else
+      @gene = [gene]
+    end
     if args.include? :fussy then @fussy = args[:fussy] else @fussy = true end
     if args.include? :max_dwn then @max_dwn = args[:max_dwn] else @max_dwn = 10 end
     if args.include? :ref_file
@@ -33,18 +37,20 @@ class Download
   def stream()
     @species.each do |sp|
       fail_sp = true
-      dwn_seqs(sp) do |seq|
-        accession = seq.accessions[0]
-        if @fussy then seq = find_feature(seq, sp, @gene) else seq = seq.to_biosequence end
-        unless seq.length == 0
-          if @ref_file then
-            unless ref_align(seq, @ref_file, min=@ref_min, max=@ref_max, reg_exp=@seq_regexp)
-              next
+      break unless @gene.each do |locus|
+        dwn_seqs(sp, locus) do |seq|
+          accession = seq.accessions[0]
+          if @fussy then seq = find_feature(seq, sp, locus) else seq = seq.to_biosequence end
+          unless seq.length == 0
+            if @ref_file then
+              unless ref_align(seq, @ref_file, min=@ref_min, max=@ref_max, reg_exp=@seq_regexp)
+                next
+              end
             end
+            File.open("#{sp}_#{@gene[0]}.fasta", "w") {|handle| handle << seq.output_fasta("#{accession}")}
+            fail_sp = false
+            break
           end
-          File.open("#{sp}_#{gene}.fasta", "w") {|handle| handle << seq.output_fasta("#{accession}")}
-          fail_sp = false
-          break
         end
       end
       if fail_sp then @species_fail.push(sp) end
@@ -54,10 +60,10 @@ class Download
   
   #Internal methods
   private
-  def dwn_seqs(organism, retmax=10)
+  def dwn_seqs(organism, locus, retmax=10)
     locker = 0
     begin
-      if @fussy then search = "#{organism}[organism] AND #{@gene}[gene]" else search = "#{organism} AND #{@gene}" end
+      if @fussy then search = "#{organism}[organism] AND #{locus}[gene]" else search = "#{organism} AND #{locus}" end
         n_ids = @ncbi.esearch(search, { "db"=>"nucleotide", "rettype"=>"gb", "retmax"=> retmax})
       curr_id = 0
       while curr_id < n_ids.length
@@ -84,14 +90,16 @@ class Download
     return Bio::Sequence.new("#{better}")
   end
 
-  def ref_align(seq, ref_file, ref_min, max=100000, reg_exp=/[a-zA-Z]*/)
+  def ref_align(seq, ref_file, ref_min, max=100000, reg_exp=/[bdefhijklmnopqrstuvwxyz]*/)
+    if seq.nil? then return false end
     if seq.length < ref_min then return false end
+    if seq.length > max then return false end
     FileUtils.cp(ref_file, "download_ref_#{@id}.fasta")
     File.open("download_ref_#{@id}.fasta", "a") {|handle| handle << seq.output_fasta("temp_file")}
     `mafft --quiet download_ref_#{@id}.fasta > download_ref_#{@id}_mafft.fasta`
     seq = Bio::FastaFormat.open("download_ref_#{@id}_mafft.fasta").first
     File.delete("download_ref_#{@id}.fasta", "download_ref_#{@id}_mafft.fasta")
-    if (seq.length > max) then return false end
+    if seq.nil? then return false end
     if seq.to_biosequence[reg_exp] then return false end
     return true
   end
