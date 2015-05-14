@@ -46,7 +46,9 @@ class Cap
     @hawks.each {|hawk| threads << Thread.new { failed_species << hawk.check() } }
     threads.each {|t| t.join }
     failed_species.flatten!
-    failed_species.each {|sp_gene| if File.exists?("#{sp_gene}.fasta") then File.rename("#{sp_gene}.fasta", "#{sp_gene}_bad.fasta") end }
+    failed_species.each {|sp_gene|
+      puts "failed: #{sp_gene}"
+      if File.exists?("#{sp_gene}.fasta") then File.rename("#{sp_gene}.fasta", "#{sp_gene}_bad.fasta") end }
   end
 
   def phylogen

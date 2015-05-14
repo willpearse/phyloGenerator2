@@ -26,6 +26,7 @@ class Download
       @ref_min = args[:ref_min]
       @ref_file = args[:ref_file]
     end
+    if args.include?(:name_check) then @name_check = args[:name_check] else @name_check = false end
     if args.include? :max_gaps
       #@seq_regexp = Regexp.new("[actg]{#{args[:first_length]},}([-]{3,}[actg]{#{args[:rest_length]},}){#{args[:max_gaps]},}")
       @seq_regexp = Regexp.new("([a-zA-Z\?]+[-]{args[:gap_length],}[a-zA-Z\?]+){#{args[:max_gaps]},}")
@@ -60,14 +61,19 @@ class Download
   
   #Internal methods
   private
-  def dwn_seqs(organism, locus, retmax=10)
+  def dwn_seqs(organism, locus)
     locker = 0
     begin
-      if @fussy then search = "#{organism}[organism] AND #{locus}[gene]" else search = "#{organism} AND #{locus}" end
-        n_ids = @ncbi.esearch(search, { "db"=>"nucleotide", "rettype"=>"gb", "retmax"=> retmax})
+      if @fussy then search = "#{organism}[organism] AND #{locus}[gene]" else search = "#{organism}[organism] AND #{locus}" end
+        n_ids = @ncbi.esearch(search, { "db"=>"nucleotide", "rettype"=>"gb", "retmax"=> @max_dwn})
       curr_id = 0
       while curr_id < n_ids.length
-        yield Bio::GenBank.new(@ncbi.efetch(ids = n_ids[curr_id], {"db"=>"nucleotide", "rettype"=>"gb", "retmax"=> 1}))
+        seq = Bio::GenBank.new(@ncbi.efetch(ids = n_ids[curr_id], {"db"=>"nucleotide", "rettype"=>"gb", "retmax"=> 1}))
+        if @name_check
+          if seq.organism.downcase==organism.sub("_"," ").downcase then yield seq end
+        else
+          yield seq
+        end
         curr_id += 1
       end
     rescue Errno::ECONNRESET
