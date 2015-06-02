@@ -20,6 +20,10 @@ class PhyloGen
 
   def build(species, genes, constraint=false)
     @spp_lookup = Hash[species.zip(('a'..'z').to_a.repeated_combination(5).map(&:join)[0..species.length]).map{|x,y| [x,y]}]
+    File.open("phylo_species_lookup_#{@this_phylogen}.txt", "w") do |handle|
+      handle << "code_name\torig_name\n"
+      @spp_lookup.each {|orig_name, code_name| handle << "#{code_name}\t#{orig_name}\n"}
+    end
     align(species, genes)
     conc_align(genes)
     if constraint then constraint.leaves.each {|x| x.name = @spp_lookup[x]} end
@@ -80,16 +84,29 @@ class PhyloGen
     end
     case @method
     when "examl"
-      #Ha! this is shit...
       `Rscript -e "require(ape);t<-read.dna('phylo_#{@this_phylogen}.phylip');t<-rtree(nrow(t),tip.label=rownames(t),br=NULL);write.tree(t,'phylo_#{@this_phylogen}_#{@@n_runs}.tre')"`
       `parse-examl -s phylo_#{@this_phylogen}.phylip -n phylo_#{@this_phylogen}_#{@@n_runs}_parse -m DNA#{@parse_string}`
       `examl -s phylo_#{@this_phylogen}_#{@@n_runs}_parse.binary -p #{Random.rand(100000)} -m PSR -n phylo_#{@this_phylogen}_#{@@n_runs} -t phylo_#{@this_phylogen}_#{@@n_runs}.tre#{@phy_string} #{@model_params}`
+      output_phylo = "ExaML_result.phylo_#{@this_phylogen}_#{@@n_runs}"
     when "exabayes"
       `yggdrasil -f phylo_#{@this_phylogen}.phylip -s #{Random.rand(100000)} -m DNA -n phylo_#{@this_phylogen}_#{@@n_runs}#{@phy_string} #{@model_params}`
     when "raxml"
       `raxml -s phylo_#{@this_phylogen}.phylip -p #{Random.rand(100000)} -m GTRGAMMA -n phylo_#{@@n_phylogen}_#{@@n_runs}#{@phy_string} #{@model_params}`
+      output_phylo = ["RAxML_bestTree.phylo_#{@@n_phylogen}_#{@@n_runs}#{@phy_string}", "RAxML_parsimonyTree.phylo_#{@@n_phylogen}_#{@@n_runs}#{@phy_string}", "RAxML_result.phylo_#{@@n_phylogen}_#{@@n_runs}#{@phy_string}"]
     else
       raise RuntimeError, "PhyloGen called with unsupported method #{@method}"
     end
-  end  
+    #Cleanup and re-name
+    unless @method == "exabayes"
+      begin
+        output_phylo.each do |file_name|
+          raw = File.read(file_name)
+          @spp_lookup.each {|orig_name, code_name| raw.sub!(code_name, orig_name)}
+          File.open(file_name, "w") {|x| x << raw}
+        end
+      rescue
+        puts "Error correcting output names; check 'phylo' folder for errors"
+      end    
+    end
+  end
 end
