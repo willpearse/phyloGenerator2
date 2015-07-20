@@ -5,7 +5,7 @@
 require "yaml"
 require_relative "lib/Cap.rb"
 
-puts "phyloGenerator 2.0-1 DOI: 10.1111/2041-210X.12055"
+puts "phyloGenerator 2.0-2 DOI: 10.1111/2041-210X.12055"
 puts "Please *use with caution*; first version!"
 puts "Will Pearse - will.pearse@gmail.com"
 if ARGV.length == 1
