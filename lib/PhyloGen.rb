@@ -1,8 +1,5 @@
 #Building very large phylogenies from already outputted sequences
 # - PhyloGen smashes, he doesn't think (yet)
-# FWIW, this is how to make this work with RAxML
-#File.open("phylo_#{@@n_phylogen}.fasta", "w") {|file| seqs.each_pair {|sp, seq| file << seq.output_fasta(sp)} }
-#`raxml -s phylo_#{@@n_phylogen}.fasta -p #{Random.rand(100000)} -m GTRGAMMA -n phylo_#{@@n_phylogen}_#{@@n_runs}`
 require "bio"
 
 class PhyloGen
@@ -87,7 +84,7 @@ class PhyloGen
       `Rscript -e "require(ape);t<-read.dna('phylo_#{@this_phylogen}.phylip');t<-rtree(nrow(t),tip.label=rownames(t),br=NULL);write.tree(t,'phylo_#{@this_phylogen}_#{@@n_runs}.tre')"`
       `parse-examl -s phylo_#{@this_phylogen}.phylip -n phylo_#{@this_phylogen}_#{@@n_runs}_parse -m DNA#{@parse_string}`
       `examl -s phylo_#{@this_phylogen}_#{@@n_runs}_parse.binary -p #{Random.rand(100000)} -m PSR -n phylo_#{@this_phylogen}_#{@@n_runs} -t phylo_#{@this_phylogen}_#{@@n_runs}.tre#{@phy_string} #{@model_params}`
-      output_phylo = "ExaML_result.phylo_#{@this_phylogen}_#{@@n_runs}"
+      output_phylo = ["ExaML_result.phylo_#{@this_phylogen}_#{@@n_runs}"]
     when "exabayes"
       `yggdrasil -f phylo_#{@this_phylogen}.phylip -s #{Random.rand(100000)} -m DNA -n phylo_#{@this_phylogen}_#{@@n_runs}#{@phy_string} #{@model_params}`
     when "raxml"
