@@ -5,7 +5,7 @@ require "bio"
 class PhyloGen
   @@n_phylogen = 0
   @@n_runs = 0
-  def initialize(method="raxml", partition=false, model_params="")
+  def initialize(method="raxml", partition=false, model_params="", logger)
     @this_phylogen = @@n_phylogen
     @@n_phylogen += 1
     @model_params = model_params
@@ -13,6 +13,7 @@ class PhyloGen
     @partition = partition
     @partition_file = []
     @method = method
+    @logger = logger
   end
 
   def build(species, genes, constraint=false)
@@ -30,6 +31,7 @@ class PhyloGen
   #Internal methods
   private
   def align(species, genes)
+    @logger.info("PhyloGen_#{@this_phylogen}") {"Beginning alignment"}
     cr_len = 0
     genes.each do |gene|
       File.open("phylo_#{@this_phylogen}_#{gene}.fasta", "w") do |file|
@@ -48,10 +50,12 @@ class PhyloGen
         cr_len += align
       end
     end
+    @logger.info("PhyloGen_#{@this_phylogen}") {"Alignment complete"}
   end
   
   private
   def conc_align(genes)
+    @logger.info("PhyloGen_#{@this_phylogen}") {"Beginning concatenation"}
     seqs = {}
     genes.each do |gene|
       Bio::FastaFormat.open("phylo_#{@this_phylogen}_#{gene}_mafft.fasta").each_entry do |seq|
@@ -66,10 +70,12 @@ class PhyloGen
     end
     align = Bio::Alignment.new(seqs)
     File.open("phylo_#{@this_phylogen}.phylip", "w") {|file| file << align.output_phylip}
+    @logger.info("PhyloGen_#{@this_phylogen}") {"Concatenation complete"}
   end
 
   private
   def phylo_generate(constraint=false)
+    @logger.info("PhyloGen_#{@this_phylogen}") {"Beginning phylogeny search"}
     @@n_runs += 1
     if @partition
       File.open("phylo_#{@this_phylogen}_#{@@n_runs}.partition", "w") {|file| file << @partition_file.join("\n")}
@@ -93,6 +99,7 @@ class PhyloGen
     else
       raise RuntimeError, "PhyloGen called with unsupported method #{@method}"
     end
+    @logger.info("PhyloGen_#{@this_phylogen}") {"Phylogeny search complete"}
     #Cleanup and re-name
     unless @method == "exabayes"
       begin

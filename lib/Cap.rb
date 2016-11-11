@@ -3,24 +3,26 @@ require_relative "Download.rb"
 require_relative "PhyloGen.rb"
 require_relative "Hawkeye.rb"
 require 'fileutils'
+require 'logger'
 
 class Cap
-  def initialize(species, genes, cache=nil, dwn_args={}, phylo_method="examl", partition=false, constraint=false, phylo_args="")
+  def initialize(species, genes, cache=nil, dwn_args={}, phylo_method="examl", partition=false, constraint=false, phylo_args="", logger)
     @species = Marshal::load(Marshal.dump(species)) #Multicore --> copy paranoia
     @genes = genes
-    @phylo_builder = PhyloGen.new(phylo_method, partition, phylo_args)
+    @phylo_builder = PhyloGen.new(phylo_method, partition, phylo_args, logger)
     @cache = cache
+    @logger = logger
     if @cache
       unless @cache[-1]=="/" then @cache+="/" end
       to_check_spp = []
       Dir["#{cache}/*.fasta"].each {|file| FileUtils.copy(file, file.split("/")[-1])}
       @species.each{|sp| if Dir["#{@cache}#{sp}*"].empty? then to_check_spp << sp end}
       puts " - - of #{species.length} species, #{to_check_spp.length} are not cached"
-      @seq_downs = genes.map {|gene| Download.new(to_check_spp, gene, dwn_args[gene.to_sym])}
-      @hawks = genes.map {|gene| Hawkeye.new(to_check_spp, gene, dwn_args[gene.to_sym])}
+      @seq_downs = genes.map {|gene| Download.new(to_check_spp, gene, dwn_args[gene.to_sym], @logger)}
+      @hawks = genes.map {|gene| Hawkeye.new(to_check_spp, gene, dwn_args[gene.to_sym], @logger)}
     else
-      @seq_downs = genes.map {|gene| Download.new(@species, gene, dwn_args[gene.to_sym])}
-      @hawks = genes.map {|gene| Hawkeye.new(@species, gene, dwn_args[gene.to_sym])}
+      @seq_downs = genes.map {|gene| Download.new(@species, gene, dwn_args[gene.to_sym], @logger)}
+      @hawks = genes.map {|gene| Hawkeye.new(@species, gene, dwn_args[gene.to_sym], @logger)}
     end
     if constraint then @constraint = Bio::Newick.new(File.read(constraint)).tree else @constraint = false end
   end

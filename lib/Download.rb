@@ -8,12 +8,13 @@ require 'bio'
 class Download
   @@n_download = 0
   attr_reader :gene
-  def initialize(species, gene, args={})
+  def initialize(species, gene, args={}, logger)
     @ncbi = Bio::NCBI::REST.new
     @species = species
     @species_fail = []
     @id = @@n_download
     @@n_download += 1
+    @logger = logger
     if args.include? :aliases
       @gene = [gene] + args[:aliases]
     else
@@ -37,6 +38,7 @@ class Download
   end
   #Run downloads
   def stream()
+    @logger.info("SeqDownload_#{@@n_download}") {"Beginning search for #{gene[0]}"}
     @species.each do |sp|
       fail_sp = true
       break unless @gene.each do |locus|
@@ -60,6 +62,7 @@ class Download
     if @verbose
       puts "- - #{@gene[0]}: #{@species.length-@species_fail.length}/#{@species.length} sequences found"
     end
+    @logger.info("SeqDownload_#{@@n_download}") {"#{@species.length-@species_fail.length}/#{@species.length} sequences found"}
     return @species_fail
   end
   

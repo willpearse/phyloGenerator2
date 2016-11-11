@@ -4,7 +4,7 @@ require "bio"
 class Hawkeye
   @@n_hawkeye = 0
   attr_reader :gene, :spp
-  def initialize(species, gene, args={})
+  def initialize(species, gene, args={}, logger)
     @spp = species
     @gene = gene
     @id = @@n_hawkeye
@@ -13,9 +13,12 @@ class Hawkeye
     @check_gap = /[-]{#{@gap_length},}/
     @check_dna = /[a-zA-Z\?]{#{@gap_length},}/
     @ref_file = args[:ref_file]
+    @logger = logger
+    if args.include? :verbose then @verobse = args[:verbose] else @verbose = true end
   end
 
   def check()
+    @logger.info("HawkEye_#{@@n_hawkeye}") {"Beginning check"}
     align()
     bad_seq = []
     #Find danger spots in alignment
@@ -32,6 +35,10 @@ class Hawkeye
           break
         end
       end
+    end
+    @logger.info("HawkEye_#{@@n_hawkeye}") {"Check complete"}
+    if verbose
+      puts "#{@seqs.length-@bad_seq.length}/#{@seqs.length} sequences passed HawkEye check"
     end
     return bad_seq
   end

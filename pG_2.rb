@@ -39,16 +39,37 @@ Dir.chdir options[:working_dir]
 
 #Run
 puts " - Setup complete..."
-cap = Cap.new(species, options[:genes].keys.map(&:to_s), options[:cache], options[:genes], options[:phy_method], options[:partition], options[:constraint], options[:phylo_args])
+logger = Logger.new("pG2_log_#{Time.now.strftime("%d-%m-%Y %H:%M")}")
+logger.formatter = proc do |severity, datetime, progname, msg|
+    date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+    if severity == "INFO" or severity == "WARN"
+        "[#{date_format}] #{severity}  (#{progname}): #{msg}\n"
+    else        
+        "[#{date_format}] #{severity} (#{progname}): #{msg}\n"
+    end
+end
+logger.info("setup") {"Loaded file #{ARGV[0]}"}
+logger.info("setup") {"Outputting to directory #{options[:working_dir]}"}
+logger.info("setup") {"Using email address #{options[:email]}"}
+
+cap = Cap.new(species, options[:genes].keys.map(&:to_s), options[:cache], options[:genes], options[:phy_method], options[:partition], options[:constraint], options[:phylo_args], logger)
+logger.info("setup") {"Beginning download"}
 cap.download
 puts " - Download complete..."
+logger.info("setup") {"Download complete"}
 if options[:hawkeye]
+  logger.info("setup") {"Beginning HawkEye"}
   cap.check
+  logger.info("setup") {"Hawkeye complete"}
   puts " - Secondary check complete..."
 end
 unless options[:phy_method]=="nothing" then
+  logger.info("setup") {"Beginning phylogeny search"}
   cap.phylogen
+  logger.info("setup") {"Phylogeny search complete"}
   puts " - Phylogeny building complete..."
 end
+logger.info("setup") {"Beginning cleanup"}
 cap.cleanup
+logger.info("setup") {"Cleanup complete"}
 puts ".Finished."
