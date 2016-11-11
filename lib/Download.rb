@@ -60,7 +60,7 @@ class Download
       if fail_sp then @species_fail.push(sp) end
     end
     if @verbose
-      puts "- - #{@gene[0]}: #{@species.length-@species_fail.length}/#{@species.length} sequences found"
+      puts " - - #{@gene[0]}: #{@species.length-@species_fail.length}/#{@species.length} sequences found"
     end
     @logger.info("SeqDownload_#{@@n_download}") {"#{@species.length-@species_fail.length}/#{@species.length} sequences found"}
     return @species_fail

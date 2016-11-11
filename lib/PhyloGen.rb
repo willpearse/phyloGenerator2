@@ -1,6 +1,7 @@
 #Building very large phylogenies from already outputted sequences
 # - PhyloGen smashes, he doesn't think (yet)
 require "bio"
+require "set"
 
 class PhyloGen
   @@n_phylogen = 0
@@ -33,11 +34,18 @@ class PhyloGen
   def align(species, genes)
     @logger.info("PhyloGen_#{@this_phylogen}") {"Beginning alignment"}
     cr_len = 0
+    ids = Set.new
     genes.each do |gene|
       File.open("phylo_#{@this_phylogen}_#{gene}.fasta", "w") do |file|
         species.each do |sp|
           if File.exists? "#{sp}_#{gene}.fasta"
-            file << Bio::FastaFormat.open("#{sp}_#{gene}.fasta", "r").first.to_biosequence.output_fasta("#{sp}_#{gene}")
+            seq = Bio::FastaFormat.open("#{sp}_#{gene}.fasta", "r").first
+            if ids.include? seq.definition
+              puts "Warning: duplicated sequences - #{sp}_#{gene}.fasta"
+              @logger.warn("PhyloGen_#{@this_phylogen}") {"Warning: duplicated sequences - #{sp}_#{gene}.fasta"}
+            end
+            ids.add seq.definition
+            file << seq.to_biosequence.output_fasta("#{sp}_#{gene}")
           else
             file << ">#{sp}_#{gene}\n"
           end
