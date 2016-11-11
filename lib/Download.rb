@@ -33,6 +33,7 @@ class Download
     else
       @seq_regexp = Regexp.new(/[a-zA-Z]*/)
     end
+    if args.include? :verbose then @verobse = args[:verbose] else @verbose = true end
   end
   #Run downloads
   def stream()
@@ -55,6 +56,9 @@ class Download
         end
       end
       if fail_sp then @species_fail.push(sp) end
+    end
+    if @verbose
+      puts "- - #{@gene[0]}: #{@species.length-@species_fail.length}/#{@species.length} sequences found"
     end
     return @species_fail
   end

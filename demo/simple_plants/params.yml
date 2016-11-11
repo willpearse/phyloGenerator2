@@ -13,12 +13,12 @@
 #ALTER EVERYTHING IN THIS SECTION!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #Species list
-species: /home/will/Code/phyloGenerator2/demo/species.txt
+species: /home/will/Code/phyloGenerator2/demo/simple_plants/species.txt
 # - or, for more fun, try 'leipzig', which is a longer list of species names
 #Output directry (must aready exist)
 working_dir: /home/will/test
 #Email address for downloads
-email: your@name.com
+email: your@email.here
 
 ######################
 #DNA DOWNLOAD#########
@@ -29,7 +29,7 @@ email: your@name.com
 #NOTE: you can specify aliases (see commented regions) for genes too
 genes:
   rbcL:
-    ref_file: /home/will/Code/phyloGenerator2/demo/rbcL_reference.fasta
+    ref_file: /home/will/Code/phyloGenerator2/demo/simple_plants/rbcL_reference.fasta
     ref_min: 700
     ref_max: 1600
     gap_length: 20
@@ -37,7 +37,7 @@ genes:
     max_dwn: 10
     #aliases: [ribulose bisphosphate, any other name for this locus]
   matK:
-    ref_file: /home/will/Code/phyloGenerator2/demo/matK_reference.fasta
+    ref_file: /home/will/Code/phyloGenerator2/demo/simple_plants/matK_reference.fasta
     ref_min: 400
     ref_max: 1500
     gap_length: 5
