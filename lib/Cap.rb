@@ -16,7 +16,7 @@ class Cap
       unless @cache[-1]=="/" then @cache+="/" end
       to_check_spp = []
       Dir["#{cache}/*.fasta"].each {|file| FileUtils.copy(file, file.split("/")[-1])}
-      @species.each{|sp| if Dir["#{@cache}#{sp}*"].empty? then to_check_spp << sp end}
+      @species.each{|sp| if Dir["#{@cache}#{sp}\.*"].empty? then to_check_spp << sp end}
       puts " - - of #{species.length} species, #{to_check_spp.length} are not cached"
       @seq_downs = genes.map {|gene| Download.new(to_check_spp, gene, dwn_args[gene.to_sym], @logger)}
       @hawks = genes.map {|gene| Hawkeye.new(to_check_spp, gene, dwn_args[gene.to_sym], @logger)}
