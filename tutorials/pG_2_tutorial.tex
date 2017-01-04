@@ -61,18 +61,20 @@ reach out if you're having a problem.
 \section*{Giving birth: installation}
 I assume, below, that you are on a UNIX-like system (\emph{e.g.},
 MacOS or Linux). If you're on Windows 10, activate ``developer mode''
-and you will be able to get a Linux Terminal within Windows. Once you
-have that, follow the instructions below. I cannot reasonably be
-expected to support every single operating system: I consider Windows
-10, any version of MacOS X, and Linux to be a lot!  An alternative in
-Windows, which I give in the appendix, is to use \texttt{cygwin},
-which is a sort of UNIX-like thing for Windows. Adriana de Palma
-produced this---thank you Adriana! Please contact me if you have any
-problems with the following installation steps. I assume a basic level
-of competency (\emph{e.g.}, I don't explain how to move between
-directories). If you're not comfortable doing things like this, you're
-not going to have a good time with pG2 and so I suggest you try pG1 to
-begin with.
+and you will be able to get a Linux Terminal within Windows. A great
+tutorial for doing this is avaiable online
+\\(\url{http://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/})---thank
+you Anna Alessi for suggesting this! Once you have that, follow the
+instructions below. I cannot reasonably be expected to support every
+single operating system: I consider Windows 10, any version of MacOS
+X, and Linux to be a lot!  An alternative in Windows, which I give in
+the appendix, is to use \texttt{cygwin}, which is a sort of UNIX-like
+thing for Windows. Adriana de Palma produced this---thank you Adriana!
+Please contact me if you have any problems with the following
+installation steps. I assume a basic level of competency (\emph{e.g.},
+I don't explain how to move between directories). If you're not
+comfortable doing things like this, you're not going to have a good
+time with pG2 and so I suggest you try pG1 to begin with.
 
 \begin{enumerate}
 \item Open a terminal window.
@@ -89,7 +91,7 @@ begin with.
 \item \textbf{Install RAxML, ExaML, or ExaBayes}. \\To build a
   phylogeny, you need some sort of phylogenetic search program, and
   pG2 supports two out of the box: RAxML, ExaML, and ExaBayes. I'll
-  assume you want to use RAxML: enter \texttt{git clone
+  assume you want to use RAxML: enter \\\texttt{git clone
     https://github.com/stamatak/standard-RAxML.git}, then go into the
   directory that creates and \texttt{make -f
     Makefile.AVX2.PTHREADS.gcc} or whatever implementation makes sense
