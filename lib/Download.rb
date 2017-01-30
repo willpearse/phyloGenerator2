@@ -44,6 +44,7 @@ class Download
       break unless @gene.each do |locus|
         dwn_seqs(sp, locus) do |seq|
           accession = seq.accessions[0]
+          backup = seq.dup
           if @fussy then seq = find_feature(seq, sp, locus) else seq = seq.to_biosequence end
           unless seq.length == 0
             if @ref_file then
@@ -52,6 +53,7 @@ class Download
               end
             end
             File.open("#{sp}_#{@gene[0]}.fasta", "w") {|handle| handle << seq.output_fasta("#{accession}")}
+            File.open("#{sp}_#{@gene[0]}.gb", "w") {|handle| handle << backup.to_biosequence.output(:genbank)}
             fail_sp = false
             break
           end
