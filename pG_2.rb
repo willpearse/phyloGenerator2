@@ -39,7 +39,7 @@ Dir.chdir options[:working_dir]
 
 #Run
 puts " - Setup complete..."
-logger = Logger.new("pG2_log_#{Time.now.strftime("%d-%m-%Y_%H:%M")}")
+logger = Logger.new("pG2_log_#{Time.now.strftime("%d-%m-%Y_%H-%M")}")
 logger.formatter = proc do |severity, datetime, progname, msg|
     date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
     if severity == "INFO" or severity == "WARN"

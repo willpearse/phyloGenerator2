@@ -52,6 +52,7 @@ class Download
               end
             end
             File.open("#{sp}_#{@gene[0]}.fasta", "w") {|handle| handle << seq.output_fasta("#{accession}")}
+            puts seq.output_fasta("#{accession}")
             fail_sp = false
             break
           end
@@ -97,7 +98,7 @@ class Download
     seq.features.each do |feature|
       t = [feature['gene'], feature['product'], feature['note'], feature['function']].join(",")
       if t.include? gene
-        better << seq.to_biosequence.splicing(feature.position).to_s
+        better = seq.to_biosequence.splicing(feature.position).to_s
       end
     end
     return Bio::Sequence.new("#{better}")
