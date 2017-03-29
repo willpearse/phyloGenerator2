@@ -37,8 +37,8 @@ class Hawkeye
       end
     end
     @logger.info("HawkEye_#{@@n_hawkeye}") {"Check complete"}
-    if verbose
-      puts "#{@seqs.length-@bad_seq.length}/#{@seqs.length} sequences passed HawkEye check"
+    if @verbose
+      puts "#{seqs.length-bad_seq.length}/#{seqs.length} sequences passed HawkEye check"
     end
     return bad_seq
   end
