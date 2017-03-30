@@ -19,7 +19,7 @@ class Cap
       @species.each{|sp| if Dir["#{@cache}#{sp}_*"].empty? then to_check_spp << sp end}
       puts " - - of #{species.length} species, #{to_check_spp.length} are not cached"
       @seq_downs = genes.map {|gene| Download.new(to_check_spp, gene, dwn_args[gene.to_sym], @logger)}
-      @hawks = genes.map {|gene| Hawkeye.new(to_check_spp, gene, dwn_args[gene.to_sym], @logger)}
+      @hawks = genes.map {|gene| Hawkeye.new(@species, gene, dwn_args[gene.to_sym], @logger)}
     else
       @seq_downs = genes.map {|gene| Download.new(@species, gene, dwn_args[gene.to_sym], @logger)}
       @hawks = genes.map {|gene| Hawkeye.new(@species, gene, dwn_args[gene.to_sym], @logger)}

@@ -8,7 +8,7 @@ class PhyloGen
   @@n_runs = 0
   def initialize(method="raxml", partition=false, model_params="", logger)
     @this_phylogen = @@n_phylogen
-    @@n_phylogen += 1
+    @@n_phylogen = @@n_phylogen + 1
     @model_params = model_params
     @phy_string = ""; @parse_string = ""
     @partition = partition

@@ -18,7 +18,7 @@ class Hawkeye
   end
 
   def check()
-    @logger.info("HawkEye_#{@@n_hawkeye}") {"Beginning check"}
+    @logger.info("HawkEye_#{@id}") {"Beginning check"}
     align()
     bad_seq = []
     #Find danger spots in alignment
@@ -36,7 +36,7 @@ class Hawkeye
         end
       end
     end
-    @logger.info("HawkEye_#{@@n_hawkeye}") {"Check complete"}
+    @logger.info("HawkEye_#{@@n_hawkeye}") {"#{seqs.length-bad_seq.length}/#{seqs.length} sequences passed"}
     if @verbose
       puts "#{seqs.length-bad_seq.length}/#{seqs.length} sequences passed HawkEye check"
     end

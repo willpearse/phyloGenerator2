@@ -38,7 +38,7 @@ class Download
   end
   #Run downloads
   def stream()
-    @logger.info("SeqDownload_#{@@n_download}") {"Beginning search for #{gene[0]}"}
+    @logger.info("SeqDownload_#{@id}") {"Beginning search for #{gene[0]}"}
     @species.each do |sp|
       fail_sp = true
       break unless @gene.each do |locus|
@@ -62,7 +62,7 @@ class Download
     if @verbose
       puts " - - #{@gene[0]}: #{@species.length-@species_fail.length}/#{@species.length} sequences found"
     end
-    @logger.info("SeqDownload_#{@@n_download}") {"#{@species.length-@species_fail.length}/#{@species.length} sequences found"}
+    @logger.info("SeqDownload_#{@id}") {"#{@species.length-@species_fail.length}/#{@species.length} sequences found"}
     return @species_fail
   end
   
