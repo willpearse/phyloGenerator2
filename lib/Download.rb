@@ -8,13 +8,14 @@ require 'bio'
 class Download
   @@n_download = 0
   attr_reader :gene
-  def initialize(species, gene, args={}, logger)
+  def initialize(species, gene, args={}, logger, excludes)
     @ncbi = Bio::NCBI::REST.new
     @species = species
     @species_fail = []
     @id = @@n_download
     @@n_download += 1
     @logger = logger
+    @excludes = excludes
     if args.include? :aliases
       @gene = [gene] + args[:aliases]
     else
@@ -44,12 +45,11 @@ class Download
       break unless @gene.each do |locus|
         dwn_seqs(sp, locus) do |seq|
           accession = seq.accessions[0]
+          if @excludes.include? accession then next end
           if @fussy then seq = find_feature(seq, sp, locus) else seq = seq.to_biosequence end
           unless seq.length == 0
             if @ref_file then
-              unless ref_align(seq, @ref_file, min=@ref_min, max=@ref_max, reg_exp=@seq_regexp)
-                next
-              end
+              unless ref_align(seq, @ref_file, min=@ref_min, max=@ref_max, reg_exp=@seq_regexp) then next end
             end
             File.open("#{sp}_#{@gene[0]}.fasta", "w") {|handle| handle << seq.output_fasta("#{accession}")}
             fail_sp = false

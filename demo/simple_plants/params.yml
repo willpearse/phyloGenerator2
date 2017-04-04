@@ -64,3 +64,8 @@ phy_method: raxml
 partition: true
 #Whether to load DNA data from a previous run ('cached' run)
 #cache: /home/will/test
+
+#Specify a folder containing sequences never to download again (e.g., output from a Hawkeye run)
+#exclude_folder: /home/will/output/hawkeye
+#Specify a file containing accession numbers never to download again
+#exclude_file: /home/will/Code/phyloGenerator2/demo/simple_plants/exclude_file.txt

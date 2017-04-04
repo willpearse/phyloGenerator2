@@ -19,6 +19,14 @@ if ARGV.length == 1
     species = File.open(options[:species], "r").readlines.map {|line| line.chomp}
     unless options.keys.include?(:phylo_args) then options[:phylo_args] = "" end
     unless options.keys.include?(:phy_method) then options[:phy_method]="nothing" end
+    
+    options[:excludes] = []
+    if options.keys.include?(:exclude_folder) then
+      Dir["#{options[:exclude_folder]}/*.fasta"].each {|file| options[:excludes] << Bio::FastaFormat.open(file).to_a[0].definition}
+    end
+    if options.keys.include?(:exclude_file) then
+      options[:excludes] = File.open(options[:exclude_file], "r").readlines.map {|line| line.chomp}
+    end
   rescue Exception => msg
     puts "Error: cannot load settings file. Either malformed or non-existant."
     puts "Printing error message, then exiting..."
@@ -52,7 +60,7 @@ logger.info("setup") {"Loaded file #{ARGV[0]}"}
 logger.info("setup") {"Outputting to directory #{options[:working_dir]}"}
 logger.info("setup") {"Using email address #{options[:email]}"}
 
-cap = Cap.new(species, options[:genes].keys.map(&:to_s), options[:cache], options[:genes], options[:phy_method], options[:partition], options[:constraint], options[:phylo_args], logger)
+cap = Cap.new(species, options[:genes].keys.map(&:to_s), options[:cache], options[:genes], options[:phy_method], options[:partition], options[:constraint], options[:phylo_args], logger, options[:excludes])
 logger.info("setup") {"Beginning download"}
 cap.download
 puts " - Download complete..."
