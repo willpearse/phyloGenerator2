@@ -11,13 +11,13 @@
 ######################
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #ALTER EVERYTHING IN THIS SECTION!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #Species list
-species: /home/will/Documents/zooplankton/fewer.spp.txt
+species: /wherever/you/keep/phyloGenerator2/species.txt
 #Output directry (must aready exist)
-working_dir: /home/will/Documents/zooplankton/
+working_dir: /a/directory/to/output/to
 #Email address for downloads
-email: you@name.com
+email: your@email.address
 
 ######################
 #DNA DOWNLOAD#########
@@ -82,7 +82,7 @@ genes:
 # - there is no 'false' value that must be supplied
 #Which program to use for phylogenetic search
 #phy_method: examl
-phy_method: raxml
+#phy_method: raxml
 #phy_method: exabayes
 #Whether to perform secondary check of sequences
 #hawkeye: true

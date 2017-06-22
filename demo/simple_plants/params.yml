@@ -11,7 +11,7 @@
 ######################
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #ALTER EVERYTHING IN THIS SECTION!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #Species list
 species: /home/will/Code/phyloGenerator2/demo/simple_plants/species.txt
 # - or, for more fun, try 'leipzig', which is a longer list of species names
