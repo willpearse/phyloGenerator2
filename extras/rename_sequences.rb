@@ -30,7 +30,8 @@ File.open("#{output}", "w") do |output_file|
   Dir["#{seq_dir}/*.fasta"].each do |file|
     if file["_#{gene}.fasta"]
       seq = Bio::FastaFormat.open(file, "r").first
-      name = file[/[a-zA-Z]*_[a-zA-Z]*_[a-zA-Z]*/]
+      name = file.sub("_#{gene}.fasta", "")
+      name = name.sub("#{seq_dir}/", "")
       output_file << seq.to_biosequence.output_fasta(name)
     end
   end
