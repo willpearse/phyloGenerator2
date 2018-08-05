@@ -6,6 +6,7 @@ Will Pearse
 * Clone this repo (````git clone https://github.com/willpearse/phyloGenerator2.git````)
 * Ensure you have Ruby and BioRuby installed (````sudo gem install bio````)
 * Ensure you have _at least_ RAxML and MAFFT installed (````sudo apt-get install mafft````; ````````git clone https://github.com/stamatak/standard-raxml.git````), ExAML and ExaBayes if you want to use them
+* Make sure each program can be run from the command line by typing ````mafft````, ````raxml````, ````examl```` & ````parse-examl```` (ExaML), or ````yyggdrasil```` (part of ExaBayes). This means changing the names of the RAxML and ExaML binaries, and copying things into wherever you keep programs you can run from the command line.
 * Run the program with ````./pG_2.rb /full/path/to/param/file````
 * ...the parameters are self-explanatory within the demo parameter file. Make sure you set an email addres
 
