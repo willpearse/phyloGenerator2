@@ -54,8 +54,8 @@ phy_method: examl
 phy_method: raxml
 #phy_method: exabayes
 #If you have additional parameters to pass to your phylogeny program, do so below
-#phy_params: -N 100 #Do 100 random restarts (RAxML)
-#phy_params: -f a -N 1000 -x 123456 #Do 1000 rapid bootsrap searches, using random number seed 123456 (RAxML) - note that passing $RANDOM should produce a random number on a UNIX machine
+#phylo_args: -N 100 #Do 100 random restarts (RAxML)
+#phylo_args: -f a -N 1000 -x 123456 #Do 1000 rapid bootsrap searches, using random number seed 123456 (RAxML) - note that passing $RANDOM should produce a random number on a UNIX machine
 #Whether to perform secondary check of sequences
 #hawkeye: true
 #Constraint tree
